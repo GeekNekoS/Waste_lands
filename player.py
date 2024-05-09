@@ -1,6 +1,7 @@
 import pygame
 from config import player_sprites
 from settings import debug
+from settings import WIDTH, HEIGHT
 
 
 class Player(pygame.sprite.Sprite):
@@ -37,33 +38,51 @@ class Player(pygame.sprite.Sprite):
             self.animate(dt)
 
     def animate(self, dt):
-        self.animation_counter += dt
-        if self.animation_counter >= self.animation_speed:
-            self.animation_counter = 0
-            self.current_frame = (self.current_frame + 1) % len(self.current_sprites)
+        if self.is_moving:
+            self.animation_counter += dt
+            if self.animation_counter >= self.animation_speed:
+                self.animation_counter = 0
+                self.current_frame = (self.current_frame + 1) % len(self.current_sprites)
+                self.image = self.current_sprites[self.current_frame]
+        else:
+            self.current_frame = 0  # Возвращаемся к первому кадру
             self.image = self.current_sprites[self.current_frame]
 
     def move(self, keys, dt, trees):
         dx, dy = 0, 0
+        moving = False
+
         if keys[pygame.K_LEFT]:
             dx -= self.movement_speed * dt
             self.direction = 'left'
+            moving = True
         if keys[pygame.K_RIGHT]:
             dx += self.movement_speed * dt
             self.direction = 'right'
+            moving = True
         if keys[pygame.K_UP]:
             dy -= self.movement_speed * dt
             self.direction = 'up'
+            moving = True
         if keys[pygame.K_DOWN]:
             dy += self.movement_speed * dt
             self.direction = 'down'
+            moving = True
 
-        new_rect = self.rect.move(dx, dy)
-        new_hitbox = self.hitbox.move(dx, dy)
-        if not any(new_hitbox.colliderect(tree[1]) for tree in trees):
-            self.rect = new_rect
-            self.hitbox = new_hitbox
-            self.is_moving = True
+        if moving:
+            new_rect = self.rect.move(dx, dy)
+            new_hitbox = self.hitbox.move(dx, dy)
+
+            # Проверяем, не выходит ли новый хитбокс за пределы экрана
+            if 0 <= new_hitbox.left and new_hitbox.right <= WIDTH and 0 <= new_hitbox.top and new_hitbox.bottom <= HEIGHT:
+                if not any(new_hitbox.colliderect(tree[1]) for tree in trees):
+                    self.rect = new_rect
+                    self.hitbox = new_hitbox
+                    self.is_moving = True
+                else:
+                    self.is_moving = False
+            else:
+                self.is_moving = False
         else:
             self.is_moving = False
 

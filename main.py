@@ -2,6 +2,8 @@ import pygame
 from settings import WIDTH, HEIGHT, FPS
 from player import Player
 from world import World
+from menu import Menu
+import sys
 
 
 def main():
@@ -11,21 +13,36 @@ def main():
     player = Player((100, 100))
     world = World()
 
-    running = True
-    while running:
-        dt = clock.tick(FPS) / 1000  # Обновление времени для фреймрейта
-        for event in pygame.event.get():  # Получение и обработка списка событий
-            if event.type == pygame.QUIT:  # Проверка события "Закрыть окно"
-                running = False
+    game_started = False  # Добавляем флаг для отслеживания начала игры
 
-        keys = pygame.key.get_pressed()  # Получение состояния клавиш
-        player.update(keys, dt, world.trees)  # Обновление состояния игрока
-        screen.fill((135, 206, 235))  # Очистка экрана с заливкой цветом
+    while True:  # Заменяем однократный запуск на цикл для возможности возврата в меню
+        items = ['Continue' if game_started else 'Start Game', 'Exit']
+        menu = Menu(screen, items=items)
+        selected_action = menu.run()
 
-        world.draw(screen, player)  # Отрисовка мира и игрока
-        pygame.display.flip()  # Обновление содержимого всего экрана
+        if selected_action == 1:  # Если пользователь выбрал 'Exit'
+            break
 
-    pygame.quit()  # Закрытие и очистка ресурсов Pygame
+        game_started = True  # Обновляем флаг, когда игра начата
+
+        running = True
+        while running:
+            dt = clock.tick(FPS) / 1000
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:  # Обработка нажатия Esc
+                        running = False  # Выйти из игрового цикла, вернуться в меню
+
+            keys = pygame.key.get_pressed()
+            player.update(keys, dt, world.trees)
+            screen.fill((135, 206, 235))
+            world.draw(screen, player)
+            pygame.display.flip()
+
+    pygame.quit()
+    sys.exit()
 
 
 if __name__ == "__main__":
