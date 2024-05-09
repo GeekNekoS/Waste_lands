@@ -1,32 +1,35 @@
 import pygame
 import random
+from settings import debug, WIDTH, HEIGHT
 
 
 class World:
-    def __init__(self, screen_width, screen_height):
-        self.screen_width = screen_width
-        self.screen_height = screen_height
-        self.tree_image = pygame.image.load('objects/tree.jpg')  # Указать правильный путь к файлу
+    def __init__(self):
+        self.tree_image = pygame.image.load('sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
-        self.generate_world()
-
-    def generate_world(self):
-        for _ in range(10):  # Создаем 10 деревьев
+        for _ in range(10):
             self.add_tree()
 
     def add_tree(self):
         max_attempts = 50
-        tree_size = (150, 150)
+        image_size = (150, 150)
+        hitbox_size = (50, 50)
         while max_attempts > 0:
-            x = random.randint(0, self.screen_width - tree_size[0])
-            y = random.randint(0, self.screen_height - tree_size[1])
-            new_tree_rect = pygame.Rect(x, y, *tree_size)
-            if not any(tree.colliderect(new_tree_rect) for tree in self.trees):
-                self.trees.append(new_tree_rect)
+            x = random.randint(0, WIDTH - image_size[0])
+            y = random.randint(0, HEIGHT - image_size[1])
+            image_rect = pygame.Rect(x, y, *image_size)
+            hitbox_x = x + (image_size[0] - hitbox_size[0]) // 2
+            hitbox_y = y + image_size[1] - hitbox_size[1]
+            hitbox_rect = pygame.Rect(hitbox_x, hitbox_y, *hitbox_size)
+            if not any(tree[1].colliderect(hitbox_rect) for tree in self.trees):
+                self.trees.append((image_rect, hitbox_rect))
                 break
             max_attempts -= 1
 
-    def draw(self, screen):
-        for tree_rect in self.trees:
-            screen.blit(self.tree_image, tree_rect)
+    def draw(self, screen, player):
+        for image_rect, hitbox_rect in sorted(self.trees, key=lambda x: x[0].bottom):
+            screen.blit(self.tree_image, image_rect)
+            if debug:
+                pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)
+        player.draw(screen)

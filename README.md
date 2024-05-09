@@ -66,6 +66,20 @@
 ## Музычка для разработки [Neko's edition]
 <details>
   <summary>
+    <a href='https://www.youtube.com/watch?v=ujLBD9pFPtY'>Melodic house beachy sundowner mix</a>
+  </summary>
+  <img src='data_for_readme/melodic_house_beachy_sundowner_mix.png'></img>
+</details>
+
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=ujLBD9pFPtY'>Deep house sunrise mix</a>
+  </summary>
+  <img src='data_for_readme/deep_house_sunrise_mix.png'></img>
+</details>
+
+<details>
+  <summary>
     <a href='https://www.youtube.com/watch?v=k91a5HNwoAw'>Golf car house mix</a>
   </summary>
   <img src='data_for_readme/golf_car_house_mix.png'></img>
