@@ -66,6 +66,20 @@
 ## Музычка для разработки [Neko's edition]
 <details>
   <summary>
+    <a href='https://www.youtube.com/watch?v=k91a5HNwoAw'>Golf car house mix</a>
+  </summary>
+  <img src='data_for_readme/golf_car_house_mix.png'></img>
+</details>
+
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=vgd-95t-jR4'>Bali vibes melodic house mix</a>
+  </summary>
+  <img src='data_for_readme/bali_vibes_melodic_house_mix.png'></img>
+</details>
+
+<details>
+  <summary>
     <a href='https://www.youtube.com/watch?v=xaFIBS3V9s4'>Melodic techno cliffside mix</a>
   </summary>
   <img src='data_for_readme/melodic_techno_cliffside_mix.png'></img>
