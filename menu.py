@@ -3,11 +3,14 @@ import sys
 
 
 class Menu:
-    def __init__(self, screen):
+    def __init__(self, screen, items=None):
         self.screen = screen
         self.bg_color = (0, 0, 0)
         self.font = pygame.font.Font(None, 36)
-        self.items = ['Start Game', 'Exit']
+        if items is None:
+            self.items = ['Start Game', 'Exit']
+        else:
+            self.items = items
         self.selected_index = 0
 
     def run(self):

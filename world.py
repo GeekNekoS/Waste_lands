@@ -28,8 +28,19 @@ class World:
             max_attempts -= 1
 
     def draw(self, screen, player):
-        for image_rect, hitbox_rect in sorted(self.trees, key=lambda x: x[0].bottom):
-            screen.blit(self.tree_image, image_rect)
-            if debug:
-                pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)
+        # Отрисовываем сначала те деревья, перед которыми персонаж должен находиться
+        for image_rect, hitbox_rect in self.trees:
+            if player.rect.bottom > hitbox_rect.top:
+                screen.blit(self.tree_image, image_rect)
+                if debug:
+                    pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)  # отрисовка хитбокса дерева для отладки
+
+        # Отрисовка персонажа
         player.draw(screen)
+
+        # Отрисовка деревьев, за которыми должен находиться персонаж
+        for image_rect, hitbox_rect in self.trees:
+            if player.rect.bottom <= hitbox_rect.top:
+                screen.blit(self.tree_image, image_rect)
+                if debug:
+                    pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)  # отрисовка хитбокса дерева для отладки
