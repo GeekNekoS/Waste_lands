@@ -1,6 +1,7 @@
 ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python)&nbsp;
 
 ## *PIXEL CRAFT*
+Пока что игрушка без жанра
 <br /> <br />
 
 
@@ -64,6 +65,20 @@
 
 <a name="nekos_music"></a>
 ## Музычка для разработки [Neko's edition]
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=tyZqw_UuiF0'>Gondola house mix</a>
+  </summary>
+  <img src='data_for_readme/gondola_house_mix.png'></img>
+</details>
+
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=dSZRLMcml8k'>Wavey vinyl house mix</a>
+  </summary>
+  <img src='data_for_readme/wavey_vinyl_house_mix.png'></img>
+</details>
+
 <details>
   <summary>
     <a href='https://www.youtube.com/watch?v=ujLBD9pFPtY'>Melodic house beachy sundowner mix</a>
