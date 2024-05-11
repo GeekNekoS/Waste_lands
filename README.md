@@ -1,6 +1,7 @@
 ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python)&nbsp;
 
 ## *PIXEL CRAFT*
+Прогресс: [██░░░░░░░] 20%
 Пока что игрушка без жанра
 <br /> <br />
 
@@ -8,6 +9,7 @@
 # Навигация
  - [Настройка готового проекта](#setting_up_a_project)
  - [Полезные команды](#useful_commands)
+ - [Полезные ссылки](#useful_urls)
  - [Требования к проекту](#project_requirements)
  - [Музычка для разработки](#nekos_music)
 <br /> <br />
@@ -30,6 +32,12 @@
 <br /> <br />
 
 
+<a name="useful_urls"></a> 
+## Полезные ссылки
+[Звуки игры, звуковые эффекты](https://pixabay.com/ru/sound-effects/search/%d0%b7%d0%b2%d1%83%d0%ba%d0%b8%20%d0%b8%d0%b3%d1%80%d1%8b/?pagi=9)
+<br /> <br />
+
+
 <a name="project_requirements"></a> 
 # Требования к проекту
 - Игра должна быть написана на PyGame
@@ -41,11 +49,11 @@
 
     Алгоритма нет: 0%.
 
-    Легкие алгоритмы. Примеры: алгоритм давался на парах, AABB: 20%
+    [✓] Легкие алгоритмы. Примеры: алгоритм давался на парах, AABB (Axis-Aligned Bounding Box): 20%
 
-    Средние алгоритмы. Примеры: оптимизация алгоритма с пар (улучшенный BFS/DFS, A* и т.д.): 40%
+    [ ] Средние алгоритмы. Примеры: оптимизация алгоритма с пар (улучшенный BFS/DFS, A* и т.д.): 40%
 
-    Все, что сложнее и комплекснее (QuadTree, дерево решений, Perlin noise и т.д.): 60+%
+    [ ] Все, что сложнее и комплекснее (QuadTree, дерево решений, Perlin noise и т.д.): 60+%
 
     Надо понимать, что выполнив 2 алгоритма с пар вы не получите 40*2%, но немного доп.баллов при хорошей реализации и защите получите.
 
@@ -65,6 +73,13 @@
 
 <a name="nekos_music"></a>
 ## Музычка для разработки [Neko's edition]
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=c_hO_fjmMnk'>Desert vibes melodic house mix</a>
+  </summary>
+  <img src='data_for_readme/desert_vibes_melodic_house_mix.png'></img>
+</details>
+
 <details>
   <summary>
     <a href='https://www.youtube.com/watch?v=tyZqw_UuiF0'>Gondola house mix</a>
