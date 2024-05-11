@@ -67,6 +67,13 @@
 ## Музычка для разработки [Neko's edition]
 <details>
   <summary>
+    <a href='https://www.youtube.com/watch?v=GW05iIpTJN8'>Good morning house mix</a>
+  </summary>
+  <img src='data_for_readme/good_morning_house_mix.png'></img>
+</details>
+
+<details>
+  <summary>
     <a href='https://www.youtube.com/watch?v=tyZqw_UuiF0'>Gondola house mix</a>
   </summary>
   <img src='data_for_readme/gondola_house_mix.png'></img>
