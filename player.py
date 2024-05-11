@@ -13,14 +13,15 @@ class Player(pygame.sprite.Sprite):
             'up': [pygame.image.load(f'{player_sprites}up_{i}.png').convert_alpha() for i in range(1, 5)],
             'down': [pygame.image.load(f'{player_sprites}down_{i}.png').convert_alpha() for i in range(1, 5)]
         }
-        self.direction = 'down'
+        self.direction = 'down'  # Изначально направление вниз
         self.current_sprites = self.sprites[self.direction]
         self.current_frame = 0
         self.image = self.current_sprites[self.current_frame]
         self.rect = self.image.get_rect(topleft=start_pos)
-        self.movement_speed = 200
-        self.animation_speed = 0.1
+        self.movement_speed = 2.25
+        self.animation_speed = 10
         self.animation_counter = 0
+        self.is_moving = False
 
         # Установка хитбокса
         hitbox_width = self.rect.width // 2
@@ -47,54 +48,61 @@ class Player(pygame.sprite.Sprite):
             self.current_frame = (self.current_frame + 1) % len(self.current_sprites)
             self.image = self.current_sprites[self.current_frame]
 
+    def get_movement_direction(self, keys):
+        if keys[pygame.K_LEFT]:
+            return 'left'
+        elif keys[pygame.K_RIGHT]:
+            return 'right'
+        elif keys[pygame.K_UP]:
+            return 'up'
+        elif keys[pygame.K_DOWN]:
+            return 'down'
+        else:
+            return self.direction  # Если ни одна клавиша не нажата, возвращаем текущее направление
+
     def move(self, keys, dt, trees):
         dx, dy = 0, 0
         moving = False
 
-        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:  # Проверяем, что нажата только клавиша влево
+        if keys[pygame.K_LEFT]:
             dx -= self.movement_speed * dt
-            if self.direction != 'left':
-                self.direction = 'left'
-                self.current_sprites = self.sprites['left']
-                self.current_frame = 0
+            self.direction = 'left'
+            self.current_sprites = self.sprites['left']
             moving = True
-        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:  # Проверяем, что нажата только клавиша вправо
+        elif keys[pygame.K_RIGHT]:
             dx += self.movement_speed * dt
-            if self.direction != 'right':
-                self.direction = 'right'
-                self.current_sprites = self.sprites['right']
-                self.current_frame = 0
+            self.direction = 'right'
+            self.current_sprites = self.sprites['right']
             moving = True
-        if keys[pygame.K_UP] and not keys[pygame.K_DOWN]:  # Проверяем, что нажата только клавиша вверх
+        elif keys[pygame.K_UP]:
             dy -= self.movement_speed * dt
-            if self.direction != 'up':
-                self.direction = 'up'
-                self.current_sprites = self.sprites['up']
-                self.current_frame = 0
+            self.direction = 'up'
+            self.current_sprites = self.sprites['up']
             moving = True
-        elif keys[pygame.K_DOWN] and not keys[pygame.K_UP]:  # Проверяем, что нажата только клавиша вниз
+        elif keys[pygame.K_DOWN]:
             dy += self.movement_speed * dt
-            if self.direction != 'down':
-                self.direction = 'down'
-                self.current_sprites = self.sprites['down']
-                self.current_frame = 0
+            self.direction = 'down'
+            self.current_sprites = self.sprites['down']
             moving = True
 
         if moving:
             new_rect = self.rect.move(dx, dy)
             new_hitbox = self.hitbox.move(dx, dy)
 
-            if 0 <= new_hitbox.left and new_hitbox.right <= WIDTH and 0 <= new_hitbox.top and new_hitbox.bottom <= HEIGHT:
-                if not any(new_hitbox.colliderect(tree[1]) for tree in trees):
-                    self.rect = new_rect
-                    self.hitbox = new_hitbox
-                    self.is_moving = True
-                else:
-                    self.is_moving = False
+            # Проверка на столкновения с деревьями
+            if all(not tree[1].colliderect(new_hitbox) for tree in trees):
+                self.rect = new_rect
+                self.hitbox = new_hitbox
+                self.is_moving = True  # Устанавливаем флаг движения
             else:
+                # Если есть столкновение, персонаж не должен двигаться
                 self.is_moving = False
         else:
+            # Если не нажата ни одна клавиша для движения, анимация должна остановиться
             self.is_moving = False
+            self.current_frame = 0  # Сброс текущего кадра
+
+        self.animate(dt)  # Всегда обновляем анимацию
 
         self.update_hitbox()
 
