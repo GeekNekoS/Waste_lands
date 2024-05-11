@@ -9,7 +9,7 @@
  - [Настройка готового проекта](#setting_up_a_project)
  - [Полезные команды](#useful_commands)
  - [Требования к проекту](#project_requirements)
- - [Музычка для разработки](#nekos_music)
+ - [Музычка для разработки](#music)
 <br /> <br />
 
 
@@ -63,7 +63,7 @@
 <br /> <br />
 
 
-<a name="nekos_music"></a>
+<a name="music"></a>
 ## Музычка для разработки [Neko's edition]
 <details>
   <summary>
