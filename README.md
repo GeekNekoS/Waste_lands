@@ -9,7 +9,7 @@
  - [Настройка готового проекта](#setting_up_a_project)
  - [Полезные команды](#useful_commands)
  - [Требования к проекту](#project_requirements)
- - [Музычка для разработки](#nekos_music)
+ - [Музычка для разработки](#music)
 <br /> <br />
 
 
@@ -63,8 +63,15 @@
 <br /> <br />
 
 
-<a name="nekos_music"></a>
+<a name="music"></a>
 ## Музычка для разработки [Neko's edition]
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=GW05iIpTJN8'>Good morning house mix</a>
+  </summary>
+  <img src='data_for_readme/good_morning_house_mix.png'></img>
+</details>
+
 <details>
   <summary>
     <a href='https://www.youtube.com/watch?v=tyZqw_UuiF0'>Gondola house mix</a>
