@@ -13,15 +13,14 @@ class Player(pygame.sprite.Sprite):
             'up': [pygame.image.load(f'{player_sprites}up_{i}.png').convert_alpha() for i in range(1, 5)],
             'down': [pygame.image.load(f'{player_sprites}down_{i}.png').convert_alpha() for i in range(1, 5)]
         }
-        self.direction = 'down'  # Изначально направление вниз
+        self.direction = 'down'
         self.current_sprites = self.sprites[self.direction]
         self.current_frame = 0
         self.image = self.current_sprites[self.current_frame]
         self.rect = self.image.get_rect(topleft=start_pos)
-        self.movement_speed = 2.25
-        self.animation_speed = 10
+        self.movement_speed = 150
+        self.animation_speed = 0.25
         self.animation_counter = 0
-        self.is_moving = False
 
         # Установка хитбокса
         hitbox_width = self.rect.width // 2
@@ -47,18 +46,6 @@ class Player(pygame.sprite.Sprite):
             self.animation_counter = 0
             self.current_frame = (self.current_frame + 1) % len(self.current_sprites)
             self.image = self.current_sprites[self.current_frame]
-
-    def get_movement_direction(self, keys):
-        if keys[pygame.K_LEFT]:
-            return 'left'
-        elif keys[pygame.K_RIGHT]:
-            return 'right'
-        elif keys[pygame.K_UP]:
-            return 'up'
-        elif keys[pygame.K_DOWN]:
-            return 'down'
-        else:
-            return self.direction  # Если ни одна клавиша не нажата, возвращаем текущее направление
 
     def move(self, keys, dt, trees):
         dx, dy = 0, 0

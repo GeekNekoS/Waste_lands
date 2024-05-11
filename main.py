@@ -8,6 +8,7 @@ import sys
 
 def main():
     pygame.init()
+    pygame.display.set_caption("Pixel Craft")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     world = World()
