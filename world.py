@@ -2,6 +2,8 @@ import pygame
 import random
 from settings import debug, WIDTH, HEIGHT
 from inventory import Inventory, InventoryPanel
+from items import Axe
+from utils import detect_item_pickup, draw_debug_line
 
 
 class World:
@@ -16,13 +18,40 @@ class World:
         self.camera_y = 0
 
         # Создаем панель инвентаря для персонажа
-        self.player_inventory = Inventory(max_slots=5)
+        self.player_inventory = Inventory(max_slots=4)
         panel_width = 200  # Ширина панели инвентаря
         panel_height = 50  # Высота панели инвентаря
         panel_x = (WIDTH - panel_width) // 2  # Рассчитываем координату x для центрирования панели по горизонтали
         panel_y = 10  # Размещаем панель в самом верху экрана
         self.inventory_panel = InventoryPanel(x=panel_x, y=panel_y, width=panel_width, height=panel_height,
                                               inventory=self.player_inventory)
+
+        self.axe = Axe()  # Создаем экземпляр класса Axe
+        self.axe_rect = pygame.Rect(0, 0, self.axe.icon.get_width(), self.axe.icon.get_height())
+        self.spawn_axe()
+
+    def spawn_axe(self):
+        # Переменная для хранения коллизий с деревьями
+        tree_collisions = [tree[0].inflate(20, 20) for tree in self.trees]
+
+        while True:
+            # Случайные координаты для топора
+            x = random.randint(0, WIDTH - self.axe.icon.get_width())
+            y = random.randint(0, HEIGHT - self.axe.icon.get_height())
+
+            # Создаем прямоугольник для проверки коллизий
+            axe_rect = pygame.Rect(x, y, self.axe.icon.get_width(), self.axe.icon.get_height())
+
+            # Проверяем, не пересекается ли топор с деревьями
+            intersects_trees = any(axe_rect.colliderect(tree) for tree in tree_collisions)
+
+            # Если топор не пересекается с деревьями, выходим из цикла
+            if not intersects_trees:
+                break
+
+        # Устанавливаем координаты для топора
+        self.axe_rect.x = x
+        self.axe_rect.y = y
 
     def add_tree(self):
         max_attempts = 50
@@ -60,18 +89,25 @@ class World:
         camera_center_x = WIDTH // 2  # Центр экрана по горизонтали
         camera_x = player_center_x - camera_center_x
 
+        # Затемняем весь экран
+        darkness_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        darkness_surface.fill((0, 0, 0, 150))  # Черный цвет с непрозрачностью
+
+        # Создаем поверхность для затемнения объектов
+        object_darkness_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        object_darkness_surface.fill((0, 0, 0, 100))  # Черный цвет с непрозрачностью
+
+        # Отрисовываем затемнение на экране
+        screen.blit(darkness_surface, (0, 0))
+
+        # Рисуем топор
+        screen.blit(self.axe.icon, self.axe_rect.move(-camera_x, -camera_y))
+
         # Рассчитываем область видимости вокруг игрока
         visibility_radius = self.visibility_radius
         visibility_area = pygame.Rect(player.rect.centerx - visibility_radius,
                                       player.rect.centery - visibility_radius,
                                       2 * visibility_radius, 2 * visibility_radius)
-
-        # Затемняем весь экран
-        screen.fill((25, 25, 25))
-
-        # Создаем поверхность для затемнения
-        darkness_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        darkness_surface.fill((0, 0, 0, 200))  # Черный цвет с непрозрачностью
 
         # Рисуем круг области видимости на поверхности затемнения
         player_hitbox_center = (player.hitbox.centerx - camera_x, player.hitbox.centery - camera_y)
@@ -101,6 +137,16 @@ class World:
         # Рисуем затемнение на экране
         screen.blit(darkness_surface, (0, 0))
 
+        # Рисуем предмет только если он находится в области видимости и не пересекается с деревьями
+        if visibility_area.colliderect(self.axe_rect.move(-camera_x, -camera_y)):
+            axe_visible = True
+            for image_rect, hitbox_rect in self.trees:
+                if self.axe_rect.colliderect(hitbox_rect):
+                    axe_visible = False
+                    break
+            if axe_visible:
+                screen.blit(self.axe.icon, self.axe_rect.move(-camera_x, -camera_y))
+
         # Отрисовываем панель инвентаря
         self.inventory_panel.draw(screen)
 
@@ -108,10 +154,23 @@ class World:
         if debug:
             pygame.draw.circle(screen, (255, 0, 0), player_hitbox_center, self.visibility_radius, 1)
 
+            # Если включен режим отладки, рисуем линию от игрока до предмета
+            item_center = (self.axe_rect.centerx - camera_x, self.axe_rect.centery - camera_y)
+            pygame.draw.line(screen, (255, 0, 0), player_hitbox_center, item_center)
+
+        # Применяем затемнение к предмету
+        screen.blit(object_darkness_surface, (0, 0))
+
     def add_item_to_player_inventory(self, item):
         # Добавляем предмет в инвентарь персонажа
         success = self.player_inventory.add_item(item)
         if success:
             print("Предмет добавлен в инвентарь персонажа.")
+            # Обновление панели инвентаря после добавления предмета
+            self.inventory_panel.update_inventory(self.player_inventory)
         else:
             print("Инвентарь персонажа полон, предмет не добавлен.")
+
+    def update(self, player_rect):
+        if detect_item_pickup(player_rect, self.axe_rect, self.player_inventory, self.axe):
+            self.add_item_to_player_inventory(self.axe)  # Добавление предмета в инвентарь

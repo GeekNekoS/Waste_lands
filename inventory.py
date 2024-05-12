@@ -56,10 +56,18 @@ class InventoryPanel:
         slots_x = self.x + (self.width - total_width) // 2
         slots_y = self.y + (self.height - total_height) // 2
 
-        # Рисуем слоты
-        for row in range(num_slots_vertical):
-            for col in range(num_slots_horizontal):
-                slot_x = slots_x + col * (self.slot_width + self.slot_padding)
-                slot_y = slots_y + row * (self.slot_height + self.slot_padding)
-                slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
-                InventorySlot(slot_rect).draw(screen)  # Отрисовываем каждый слот
+        # Рисуем слоты и предметы
+        for i, item in enumerate(self.inventory):
+            row = i // num_slots_horizontal
+            col = i % num_slots_horizontal
+            slot_x = slots_x + col * (self.slot_width + self.slot_padding)
+            slot_y = slots_y + row * (self.slot_height + self.slot_padding)
+            slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
+            InventorySlot(slot_rect).draw(screen)  # Отрисовываем каждый слот
+            if item:
+                # Если в слоте есть предмет, отрисовываем его
+                screen.blit(item.icon, slot_rect.topleft)  # Предполагается, что у предмета есть атрибут icon
+
+    def update_inventory(self, new_inventory):
+        # Обновляем инвентарь
+        self.inventory = new_inventory
