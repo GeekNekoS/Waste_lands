@@ -2,6 +2,8 @@ import pygame
 import sys
 import os
 import json
+from utils import play_background_music
+from settings import WIDTH, HEIGHT
 
 
 class Menu:
@@ -65,6 +67,7 @@ class Menu:
         print("Starting new game...")
         self.game_started = True
         self.save_exists = False  # Новая игра, поэтому сохранение не существует
+        play_background_music()  # Запуск фоновой музыки
         self.run_game_loop()
 
     def continue_game(self):
@@ -85,8 +88,14 @@ class Menu:
 
             keys = pygame.key.get_pressed()
             self.player.update(keys, dt, self.world.trees)
+
+            # Обновляем координаты камеры на основе положения игрока
+            self.world.camera_x = max(0, min(self.player.rect.x - WIDTH // 2, self.world.camera_x))
+            self.world.camera_y = max(0, min(self.player.rect.y - HEIGHT // 2, self.world.camera_y))
+
+            # Отображаем мир с учетом камеры
             self.screen.fill((135, 206, 235))
-            self.world.draw(self.screen, self.player)
+            self.world.draw(self.screen, self.player, self.world.camera_x, self.world.camera_y)
             pygame.display.flip()
 
         # После завершения игры возвращаемся в меню
@@ -121,6 +130,7 @@ class Menu:
             self.save_exists = False  # Устанавливаем значение в False
             self.update_items()  # Обновляем список пунктов меню
         print("Exiting game...")
+        pygame.mixer.music.stop()  # Остановка фоновой музыки
         pygame.quit()
         sys.exit()
 
