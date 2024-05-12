@@ -57,27 +57,37 @@ class World:
                                       2 * visibility_radius, 2 * visibility_radius)
 
         # Затемняем весь экран
-        screen.fill((0, 0, 0))
+        screen.fill((25, 25, 25))
 
         # Создаем поверхность для затемнения
         darkness_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        darkness_surface.fill((0, 0, 0, 100))  # Черный цвет с непрозрачностью
+
+        darkness_surface.fill((0, 0, 0, 200))  # Черный цвет с непрозрачностью
 
         # Рисуем круг области видимости на поверхности затемнения
         player_hitbox_center = (player.hitbox.centerx - camera_x, player.hitbox.centery - camera_y)
         pygame.draw.circle(darkness_surface, (0, 0, 0, 0), player_hitbox_center, self.visibility_radius)
 
-        # Отрисовываем объекты в пределах области видимости
+        # Отрисовываем деревья, находящиеся ниже персонажа
         for image_rect, hitbox_rect in self.trees:
-            if visibility_area.colliderect(image_rect):
+            if player.rect.bottom > hitbox_rect.top:
+                draw_rect = image_rect.move(-camera_x, -camera_y)
+                screen.blit(self.tree_image, draw_rect)
+                if debug:
+                    draw_hitbox = hitbox_rect.move(-camera_x, -camera_y)
+                    pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 1)  # отрисовка хитбокса объекта для отладки
+
+        # Отрисовываем персонажа
+        player.draw(screen, camera_x, camera_y)
+
+        # Отрисовываем деревья, находящиеся выше персонажа
+        for image_rect, hitbox_rect in self.trees:
+            if player.rect.bottom <= hitbox_rect.top:
                 draw_rect = image_rect.move(-camera_x, -camera_y)
                 screen.blit(self.tree_image, draw_rect)
                 if debug:
                     draw_hitbox = hitbox_rect.move(-camera_x, -camera_y)
                     pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 2)  # отрисовка хитбокса объекта для отладки
-
-        # Отрисовываем персонажа
-        player.draw(screen, camera_x, camera_y)
 
         # Рисуем затемнение на экране
         screen.blit(darkness_surface, (0, 0))
