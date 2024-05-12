@@ -14,7 +14,10 @@ def main():
     clock = pygame.time.Clock()
     world = World()
     player = Player((100, 100))
-    play_background_music()  # Воспроизводим фоновую музыку
+    play_background_music()
+
+    # Создаем экземпляр меню
+    menu = Menu(screen, player, world)
 
     while True:
         for event in pygame.event.get():
@@ -31,7 +34,7 @@ def main():
         world.camera_y = player.rect.y - HEIGHT // 2
 
         # Отрисовываем мир с учетом камеры
-        screen.fill((135, 206, 235))
+        screen.fill((0, 0, 0))  # Затемняем весь экран цветом
         world.draw(screen, player, world.camera_x, world.camera_y)
 
         # Обновляем экран

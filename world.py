@@ -8,6 +8,7 @@ class World:
         self.tree_image = pygame.image.load('sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
+        self.visibility_radius = 200  # Радиус области видимости перед игроком
         for _ in range(15):
             self.add_tree()
         self.camera_x = 0
@@ -44,23 +45,43 @@ class World:
             self.trees.append((image_rect, hitbox_rect))
 
     def draw(self, screen, player, camera_x, camera_y):
-        # Отрисовываем деревья, перед которыми персонаж должен находиться
+        # Рассчитываем смещение камеры, чтобы персонаж оказался по центру экрана по горизонтали
+        player_center_x = player.rect.centerx
+        camera_center_x = WIDTH // 2  # Центр экрана по горизонтали
+        camera_x = player_center_x - camera_center_x
+
+        # Рассчитываем область видимости вокруг игрока
+        visibility_radius = self.visibility_radius
+        visibility_area = pygame.Rect(player.rect.centerx - visibility_radius,
+                                      player.rect.centery - visibility_radius,
+                                      2 * visibility_radius, 2 * visibility_radius)
+
+        # Затемняем весь экран
+        screen.fill((0, 0, 0))
+
+        # Создаем поверхность для затемнения
+        darkness_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        darkness_surface.fill((0, 0, 0, 100))  # Черный цвет с непрозрачностью
+
+        # Рисуем круг области видимости на поверхности затемнения
+        player_hitbox_center = (player.hitbox.centerx - camera_x, player.hitbox.centery - camera_y)
+        pygame.draw.circle(darkness_surface, (0, 0, 0, 0), player_hitbox_center, self.visibility_radius)
+
+        # Отрисовываем объекты в пределах области видимости
         for image_rect, hitbox_rect in self.trees:
-            if player.rect.bottom > hitbox_rect.top:
+            if visibility_area.colliderect(image_rect):
                 draw_rect = image_rect.move(-camera_x, -camera_y)
                 screen.blit(self.tree_image, draw_rect)
                 if debug:
                     draw_hitbox = hitbox_rect.move(-camera_x, -camera_y)
-                    pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 2)  # отрисовка хитбокса дерева для отладки
+                    pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 2)  # отрисовка хитбокса объекта для отладки
 
         # Отрисовываем персонажа
         player.draw(screen, camera_x, camera_y)
 
-        # Отрисовываем деревья, за которыми должен находиться персонаж
-        for image_rect, hitbox_rect in self.trees:
-            if player.rect.bottom <= hitbox_rect.top:
-                draw_rect = image_rect.move(-camera_x, -camera_y)
-                screen.blit(self.tree_image, draw_rect)
-                if debug:
-                    draw_hitbox = hitbox_rect.move(-camera_x, -camera_y)
-                    pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 2)  # отрисовка хитбокса дерева для отладки
+        # Рисуем затемнение на экране
+        screen.blit(darkness_surface, (0, 0))
+
+        # Рисуем красную линию окружности в режиме отладки
+        if debug:
+            pygame.draw.circle(screen, (255, 0, 0), player_hitbox_center, self.visibility_radius, 1)
