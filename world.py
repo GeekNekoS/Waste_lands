@@ -1,6 +1,7 @@
 import pygame
 import random
 from settings import debug, WIDTH, HEIGHT
+from inventory import Inventory, InventoryPanel
 
 
 class World:
@@ -13,6 +14,15 @@ class World:
             self.add_tree()
         self.camera_x = 0
         self.camera_y = 0
+
+        # Создаем панель инвентаря для персонажа
+        self.player_inventory = Inventory(max_slots=5)
+        panel_width = 200  # Ширина панели инвентаря
+        panel_height = 50  # Высота панели инвентаря
+        panel_x = (WIDTH - panel_width) // 2  # Рассчитываем координату x для центрирования панели по горизонтали
+        panel_y = 10  # Размещаем панель в самом верху экрана
+        self.inventory_panel = InventoryPanel(x=panel_x, y=panel_y, width=panel_width, height=panel_height,
+                                              inventory=self.player_inventory)
 
     def add_tree(self):
         max_attempts = 50
@@ -61,7 +71,6 @@ class World:
 
         # Создаем поверхность для затемнения
         darkness_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-
         darkness_surface.fill((0, 0, 0, 200))  # Черный цвет с непрозрачностью
 
         # Рисуем круг области видимости на поверхности затемнения
@@ -92,6 +101,17 @@ class World:
         # Рисуем затемнение на экране
         screen.blit(darkness_surface, (0, 0))
 
+        # Отрисовываем панель инвентаря
+        self.inventory_panel.draw(screen)
+
         # Рисуем красную линию окружности в режиме отладки
         if debug:
             pygame.draw.circle(screen, (255, 0, 0), player_hitbox_center, self.visibility_radius, 1)
+
+    def add_item_to_player_inventory(self, item):
+        # Добавляем предмет в инвентарь персонажа
+        success = self.player_inventory.add_item(item)
+        if success:
+            print("Предмет добавлен в инвентарь персонажа.")
+        else:
+            print("Инвентарь персонажа полон, предмет не добавлен.")
