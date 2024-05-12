@@ -8,8 +8,10 @@ class World:
         self.tree_image = pygame.image.load('sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
-        for _ in range(10):
+        for _ in range(15):
             self.add_tree()
+        self.camera_x = 0
+        self.camera_y = 0
 
     def add_tree(self):
         max_attempts = 50
@@ -41,20 +43,24 @@ class World:
             hitbox_rect = pygame.Rect(hitbox_x, hitbox_y, *hitbox_size)
             self.trees.append((image_rect, hitbox_rect))
 
-    def draw(self, screen, player):
+    def draw(self, screen, player, camera_x, camera_y):
         # Отрисовываем деревья, перед которыми персонаж должен находиться
         for image_rect, hitbox_rect in self.trees:
             if player.rect.bottom > hitbox_rect.top:
-                screen.blit(self.tree_image, image_rect)
+                draw_rect = image_rect.move(-camera_x, -camera_y)
+                screen.blit(self.tree_image, draw_rect)
                 if debug:
-                    pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)  # отрисовка хитбокса дерева для отладки
+                    draw_hitbox = hitbox_rect.move(-camera_x, -camera_y)
+                    pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 2)  # отрисовка хитбокса дерева для отладки
 
         # Отрисовываем персонажа
-        player.draw(screen)
+        player.draw(screen, camera_x, camera_y)
 
         # Отрисовываем деревья, за которыми должен находиться персонаж
         for image_rect, hitbox_rect in self.trees:
             if player.rect.bottom <= hitbox_rect.top:
-                screen.blit(self.tree_image, image_rect)
+                draw_rect = image_rect.move(-camera_x, -camera_y)
+                screen.blit(self.tree_image, draw_rect)
                 if debug:
-                    pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)  # отрисовка хитбокса дерева для отладки
+                    draw_hitbox = hitbox_rect.move(-camera_x, -camera_y)
+                    pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 2)  # отрисовка хитбокса дерева для отладки

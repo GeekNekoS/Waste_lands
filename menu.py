@@ -3,6 +3,7 @@ import sys
 import os
 import json
 from utils import play_background_music
+from settings import WIDTH, HEIGHT
 
 
 class Menu:
@@ -87,8 +88,14 @@ class Menu:
 
             keys = pygame.key.get_pressed()
             self.player.update(keys, dt, self.world.trees)
+
+            # Обновляем координаты камеры на основе положения игрока
+            self.world.camera_x = max(0, min(self.player.rect.x - WIDTH // 2, self.world.camera_x))
+            self.world.camera_y = max(0, min(self.player.rect.y - HEIGHT // 2, self.world.camera_y))
+
+            # Отображаем мир с учетом камеры
             self.screen.fill((135, 206, 235))
-            self.world.draw(self.screen, self.player)
+            self.world.draw(self.screen, self.player, self.world.camera_x, self.world.camera_y)
             pygame.display.flip()
 
         # После завершения игры возвращаемся в меню

@@ -93,10 +93,15 @@ class Player(pygame.sprite.Sprite):
 
         self.update_hitbox()
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
+    def draw(self, screen, camera_x, camera_y):
+        # Смещаем координаты отображения на основе камеры
+        draw_rect = self.rect.move(-camera_x, -camera_y)
+        draw_hitbox = self.hitbox.move(-camera_x, -camera_y)
+
+        # Отрисовываем спрайт и хитбокс
+        screen.blit(self.image, draw_rect)
         if debug:
-            pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)  # Отрисовка хитбокса красной линией
+            pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 1)  # Отрисовка хитбокса красной линией
 
     def update_hitbox(self):
         # Обновляем хитбокс игрока после его перемещения
