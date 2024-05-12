@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import json
+from utils import play_background_music
 
 
 class Menu:
@@ -65,6 +66,7 @@ class Menu:
         print("Starting new game...")
         self.game_started = True
         self.save_exists = False  # Новая игра, поэтому сохранение не существует
+        play_background_music()  # Запуск фоновой музыки
         self.run_game_loop()
 
     def continue_game(self):
@@ -121,6 +123,7 @@ class Menu:
             self.save_exists = False  # Устанавливаем значение в False
             self.update_items()  # Обновляем список пунктов меню
         print("Exiting game...")
+        pygame.mixer.music.stop()  # Остановка фоновой музыки
         pygame.quit()
         sys.exit()
 

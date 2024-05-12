@@ -2,6 +2,7 @@
 
 ## *PIXEL CRAFT*
 Прогресс: [██░░░░░░░] 20%
+
 Пока что игрушка без жанра
 <br /> <br />
 
@@ -73,6 +74,20 @@
 
 <a name="nekos_music"></a>
 ## Музычка для разработки [Neko's edition]
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=ZpK0UqP7T-g'>Calming house mix</a>
+  </summary>
+  <img src='data_for_readme/calming_house_mix.png'></img>
+</details>
+
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=G-ZtNK8IVAU'>Beach house mix</a>
+  </summary>
+  <img src='data_for_readme/beach_house_mix.png'></img>
+</details>
+
 <details>
   <summary>
     <a href='https://www.youtube.com/watch?v=c_hO_fjmMnk'>Desert vibes melodic house mix</a>
