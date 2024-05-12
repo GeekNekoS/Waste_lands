@@ -16,16 +16,34 @@ def main():
     player = Player((100, 100))
     play_background_music()
 
+    panel_x = world.inventory_panel.x
+    panel_y = world.inventory_panel.y
+    panel_width = world.inventory_panel.width
+    panel_height = world.inventory_panel.height
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == KEYDOWN:
+
+            # В основном цикле программы
+            if event.type == MOUSEBUTTONDOWN:
+                # Обработка нажатия на ячейку инвентаря
+                mouse_x, mouse_y = event.pos
+                if panel_x <= mouse_x <= panel_x + panel_width and panel_y <= mouse_y <= panel_y + panel_height:
+                    rel_x = mouse_x - panel_x
+                    rel_y = mouse_y - panel_y
+                    col = rel_x // (world.inventory_panel.slot_width + world.inventory_panel.slot_padding)
+                    row = rel_y // (world.inventory_panel.slot_height + world.inventory_panel.slot_padding)
+                    index = int(row * (panel_width / world.inventory_panel.slot_width) + col)
+                    world.inventory_panel.set_active_slot_index(index)  # Устанавливаем выбранную ячейку
+
+            if event.type == KEYDOWN:
                 if event.key == K_e:  # Если нажата клавиша E
                     if player.rect.colliderect(world.axe_rect):  # Если игрок находится рядом с топором
-                        world.add_item_to_player_inventory(world.axe)  # Добавить топор в инвентарь игрока
-                        world.spawn_axe()  # Заспавнить новый топор
+                        if world.add_item_to_player_inventory(world.axe):  # Проверяем, есть ли место в инвентаре
+                            world.spawn_axe()  # Заспавнить новый топор, если предмет успешно поднят
 
         # Получаем состояние клавиш и обновляем состояние игрока
         keys = pygame.key.get_pressed()

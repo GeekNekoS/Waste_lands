@@ -162,15 +162,24 @@ class World:
         screen.blit(object_darkness_surface, (0, 0))
 
     def add_item_to_player_inventory(self, item):
-        # Добавляем предмет в инвентарь персонажа
-        success = self.player_inventory.add_item(item)
-        if success:
-            print("Предмет добавлен в инвентарь персонажа.")
-            # Обновление панели инвентаря после добавления предмета
-            self.inventory_panel.update_inventory(self.player_inventory)
+        # Проверяем, есть ли свободное место в инвентаре
+        if len(self.player_inventory) < self.player_inventory.max_slots:
+            # Добавляем предмет в инвентарь
+            success = self.player_inventory.add_item(item)
+            if success:
+                print("Предмет добавлен в инвентарь персонажа.")
+                # Обновляем панель инвентаря после добавления предмета
+                self.inventory_panel.update_inventory(self.player_inventory)
+            else:
+                print("Инвентарь персонажа полон, предмет не добавлен.")
+            return success
         else:
             print("Инвентарь персонажа полон, предмет не добавлен.")
+            return False
 
     def update(self, player_rect):
         if detect_item_pickup(player_rect, self.axe_rect, self.player_inventory, self.axe):
-            self.add_item_to_player_inventory(self.axe)  # Добавление предмета в инвентарь
+            if len(self.player_inventory) < self.player_inventory.max_slots:  # Проверяем, не полон ли инвентарь
+                self.add_item_to_player_inventory(self.axe)  # Добавление предмета в инвентарь
+            else:
+                print("Инвентарь персонажа полон, предмет не подобран.")

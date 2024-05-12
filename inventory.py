@@ -38,6 +38,7 @@ class InventoryPanel:
         self.slot_width = 40  # Ширина слота
         self.slot_height = 40  # Высота слота
         self.slot_padding = 1  # Расстояние между слотами
+        self.active_slot_index = None  # Индекс активной ячейки
 
     def draw(self, screen):
         # Отрисовка фона инвентаря
@@ -56,18 +57,40 @@ class InventoryPanel:
         slots_x = self.x + (self.width - total_width) // 2
         slots_y = self.y + (self.height - total_height) // 2
 
-        # Рисуем слоты и предметы
-        for i, item in enumerate(self.inventory):
-            row = i // num_slots_horizontal
-            col = i % num_slots_horizontal
-            slot_x = slots_x + col * (self.slot_width + self.slot_padding)
-            slot_y = slots_y + row * (self.slot_height + self.slot_padding)
-            slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
-            InventorySlot(slot_rect).draw(screen)  # Отрисовываем каждый слот
-            if item:
-                # Если в слоте есть предмет, отрисовываем его
-                screen.blit(item.icon, slot_rect.topleft)  # Предполагается, что у предмета есть атрибут icon
+        # Рисуем слоты
+        for row in range(num_slots_vertical):
+            for col in range(num_slots_horizontal):
+                slot_x = slots_x + col * (self.slot_width + self.slot_padding)
+                slot_y = slots_y + row * (self.slot_height + self.slot_padding)
+                slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
+                if self.active_slot_index is not None and self.active_slot_index == row * num_slots_horizontal + col:
+                    pygame.draw.rect(screen, (255, 255, 255), slot_rect, 3)  # Отрисовываем активную ячейку
+                else:
+                    pygame.draw.rect(screen, (255, 255, 255), slot_rect, 1)  # Отрисовываем обычную ячейку
+
+                # Рисуем предметы в слотах инвентаря
+                for i, item in enumerate(self.inventory):
+                    slot_x = slots_x + (i % num_slots_horizontal) * (self.slot_width + self.slot_padding)
+                    slot_y = slots_y + (i // num_slots_horizontal) * (self.slot_height + self.slot_padding)
+                    item_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
+
+                    # Определяем, является ли текущий слот активным
+                    is_active_slot = (self.active_slot_index is not None) and (self.active_slot_index == i)
+
+                    # Рисуем рамку вокруг активного слота
+                    if is_active_slot:
+                        pygame.draw.rect(screen, (255, 0, 0), item_rect, 3)
+                    else:
+                        pygame.draw.rect(screen, (255, 255, 255), item_rect, 1)
+
+                    # Рисуем предмет в слоте
+                    if item:
+                        screen.blit(item.icon, item_rect)
 
     def update_inventory(self, new_inventory):
         # Обновляем инвентарь
         self.inventory = new_inventory
+
+    def set_active_slot_index(self, index):
+        # Устанавливаем индекс активной ячейки
+        self.active_slot_index = index
