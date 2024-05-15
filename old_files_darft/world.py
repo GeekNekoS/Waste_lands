@@ -1,14 +1,14 @@
 import pygame
 import random
 from settings import debug, WIDTH, HEIGHT
-from inventory import Inventory, InventoryPanel
-from items import Axe
-from utils import detect_item_pickup, draw_debug_line
+from old_files_darft.inventory import Inventory, InventoryPanel
+from old_files_darft.items import Axe
+from old_files_darft.utils import detect_item_pickup
 
 
 class World:
     def __init__(self):
-        self.tree_image = pygame.image.load('sprites/tree.png').convert_alpha()
+        self.tree_image = pygame.image.load('../sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
         self.visibility_radius = 200  # Радиус области видимости перед игроком
