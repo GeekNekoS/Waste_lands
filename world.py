@@ -1,9 +1,9 @@
 import pygame
 import random
 from settings import debug, WIDTH, HEIGHT
-from inventory import Inventory, InventoryPanel
+from old_files_darft.inventory import Inventory, InventoryPanel
 from items import Axe
-from utils import detect_item_pickup, draw_debug_line
+from old_files_darft.utils import detect_item_pickup
 
 
 class World:

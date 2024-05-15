@@ -1,5 +1,5 @@
 import pygame
-from config import items_sprites
+from old_files_darft.config import items_sprites
 
 
 class Item:

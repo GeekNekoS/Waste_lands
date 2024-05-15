@@ -1,6 +1,6 @@
 import pygame
-from config import player_sprites
-from settings import debug, WIDTH, HEIGHT
+from old_files_darft.config import player_sprites
+from settings import debug
 import random
 
 
