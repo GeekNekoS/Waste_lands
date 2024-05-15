@@ -56,11 +56,11 @@ current_sprites = animation_sprites[current_direction]
 
 # Добавление компонентов
 player.add_component(RenderComponent(current_sprites))
-player.add_component(AnimationComponent(current_sprites, 0.15))
+player.add_component(AnimationComponent(current_sprites, 0.2))
 player.add_component(SoundComponent('sounds/click-button.mp3'))
 player.add_component(InventoryComponent(4))
 
-player.add_component(HitboxComponent(10, 10, 35, 35))  # Добавление хитбокса для персонажа
+player.add_component(HitboxComponent(5, 5, 50, 50))  # Добавление хитбокса для персонажа
 
 # Создание деревьев и других объектов
 quadtree = QuadTree(pygame.Rect(0, 0, WIDTH, HEIGHT), 4)
@@ -75,7 +75,7 @@ collision_system = CollisionSystem(quadtree)
 game_state = GameState()
 
 # Инициализация флагов для отслеживания нажатия и отпускания клавиш
-key_pressed = {pygame.K_LEFT: False, pygame.K_RIGHT: False, pygame.K_UP: False, pygame.K_DOWN: False}
+key_pressed = {pygame.K_a: False, pygame.K_d: False, pygame.K_w: False, pygame.K_s: False}
 
 running = True
 while running:
@@ -85,26 +85,14 @@ while running:
     for key in key_pressed:
         key_pressed[key] = pygame.key.get_pressed()[key]
 
-    # Инициализация переменной для отслеживания последнего направления движения
-    last_direction = None
-
     # Обработка событий клавиатуры
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     # Установка скорости в зависимости от нажатых клавиш
-    vx = (key_pressed[pygame.K_RIGHT] - key_pressed[pygame.K_LEFT]) * 1
-    vy = (key_pressed[pygame.K_DOWN] - key_pressed[pygame.K_UP]) * 1
-
-    # Установка направления движения
-    if vx != 0:
-        last_direction = 'right' if vx > 0 else 'left'
-    elif vy != 0:
-        last_direction = 'down' if vy > 0 else 'up'
-
-    # Если нажаты несколько клавиш одновременно, учитываем последнюю нажатую сторону
-    current_direction = last_direction if last_direction else current_direction
+    vx = (key_pressed[pygame.K_d] - key_pressed[pygame.K_a]) * 1
+    vy = (key_pressed[pygame.K_s] - key_pressed[pygame.K_w]) * 1
 
     # Установка скорости персонажа
     player_velocity = player.get_component(VelocityComponent)
@@ -117,12 +105,6 @@ while running:
         # Установка скорости по осям X и Y
         player_velocity.vx = vx
         player_velocity.vy = vy
-
-    # Если движение только по одной оси, устанавливаем скорость по другой оси в ноль
-    if vx != 0:
-        player_velocity.vy = 0
-    elif vy != 0:
-        player_velocity.vx = 0
 
     # Установка направления движения
     if vx != 0:
@@ -158,12 +140,12 @@ while running:
         # Получаем прямоугольник хитбокса с учетом позиции персонажа
         hitbox_rect = player_hitbox.get_rect()
         hitbox_rect.x = player_position.x
-        hitbox_rect.y = player_position.y
+        hitbox_rect.y =player_position.y
 
         # Отображаем хитбокс
         pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)
 
-    # Отрисовка деревьев
+        # Отрисовка деревьев
     for tree in trees:
         screen.blit(tree.get_component(RenderComponent).image, (tree.get_component(PositionComponent).x,
                                                                 tree.get_component(PositionComponent).y))
