@@ -6,9 +6,9 @@ import random
 
 pygame.mixer.init()
 footstep_sounds = [
-    pygame.mixer.Sound('sounds/footsteps/footstep_1.wav'),
-    pygame.mixer.Sound('sounds/footsteps/footstep_2.wav'),
-    pygame.mixer.Sound('sounds/footsteps/footstep_3.wav')
+    pygame.mixer.Sound('../sounds/footsteps/footstep_1.wav'),
+    pygame.mixer.Sound('../sounds/footsteps/footstep_2.wav'),
+    pygame.mixer.Sound('../sounds/footsteps/footstep_3.wav')
 ]
 
 
@@ -53,10 +53,10 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         # Загрузка спрайтов для всех направлений
         self.sprites = {
-            'left': [pygame.image.load(f'{player_sprites}left_{i}.png').convert_alpha() for i in range(1, 5)],
-            'right': [pygame.image.load(f'{player_sprites}right_{i}.png').convert_alpha() for i in range(1, 5)],
-            'up': [pygame.image.load(f'{player_sprites}up_{i}.png').convert_alpha() for i in range(1, 5)],
-            'down': [pygame.image.load(f'{player_sprites}down_{i}.png').convert_alpha() for i in range(1, 5)]
+            'left': [pygame.image.load(f'../{player_sprites}left_{i}.png').convert_alpha() for i in range(1, 5)],
+            'right': [pygame.image.load(f'../{player_sprites}right_{i}.png').convert_alpha() for i in range(1, 5)],
+            'up': [pygame.image.load(f'../{player_sprites}up_{i}.png').convert_alpha() for i in range(1, 5)],
+            'down': [pygame.image.load(f'../{player_sprites}down_{i}.png').convert_alpha() for i in range(1, 5)]
         }
         self.direction = 'down'
         self.current_sprites = self.sprites[self.direction]

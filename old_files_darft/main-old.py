@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
 from settings import WIDTH, HEIGHT, FPS
-from player import Player, PlayerSounds
-from world import World
+from old_files_darft.player import Player, PlayerSounds
+from old_files_darft.world import World
 import sys
 from utils import play_background_music
 
