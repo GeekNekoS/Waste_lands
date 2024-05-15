@@ -5,15 +5,20 @@ class Component:
     pass
 
 
-class HitboxComponent(Component):
-    def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+class HitboxComponent:
+    def __init__(self, x_offset, y_offset, width, height):
+        self.x_offset = x_offset  # Смещение по оси X относительно позиции сущности
+        self.y_offset = y_offset  # Смещение по оси Y относительно позиции сущности
+        self.width = width  # Ширина хитбокса
+        self.height = height  # Высота хитбокса
 
-    def get_rect(self):
-        return pygame.Rect(self.x, self.y, self.width, self.height)
+    def get_rect(self, position):
+        # Создаем прямоугольник хитбокса с учетом смещения и позиции сущности
+        return pygame.Rect(position.x + self.x_offset, position.y + self.y_offset, self.width, self.height)
+
+    def set_offset(self, x_offset, y_offset):
+        self.x_offset = x_offset
+        self.y_offset = y_offset
 
 
 class PositionComponent(Component):

@@ -11,7 +11,7 @@ from components import (
 from systems import MovementSystem, RenderSystem, CollisionSystem
 from quadtree import QuadTree
 from game_state import GameState
-from settings import debug, WIDTH, HEIGHT
+from settings import debug, WIDTH, HEIGHT, FPS
 
 pygame.init()
 
@@ -56,11 +56,11 @@ current_sprites = animation_sprites[current_direction]
 
 # Добавление компонентов
 player.add_component(RenderComponent(current_sprites))
-player.add_component(AnimationComponent(current_sprites, 0.2))
+player.add_component(AnimationComponent(current_sprites, 0.175))
 player.add_component(SoundComponent('sounds/click-button.mp3'))
 player.add_component(InventoryComponent(4))
 
-player.add_component(HitboxComponent(5, 5, 50, 50))  # Добавление хитбокса для персонажа
+player.add_component(HitboxComponent(17, 40, 31, 25))  # Добавление хитбокса для персонажа
 
 # Создание деревьев и других объектов
 quadtree = QuadTree(pygame.Rect(0, 0, WIDTH, HEIGHT), 4)
@@ -79,7 +79,7 @@ key_pressed = {pygame.K_a: False, pygame.K_d: False, pygame.K_w: False, pygame.K
 
 running = True
 while running:
-    dt = clock.tick(60) / 1000  # время между кадрами в секундах
+    dt = clock.tick(FPS) / 1000  # время между кадрами в секундах
 
     # Обновление флагов для нажатия и отпускания клавиш
     for key in key_pressed:
@@ -137,15 +137,13 @@ while running:
         player_position = player.get_component(PositionComponent)
         player_hitbox = player.get_component(HitboxComponent)
 
-        # Получаем прямоугольник хитбокса с учетом позиции персонажа
-        hitbox_rect = player_hitbox.get_rect()
-        hitbox_rect.x = player_position.x
-        hitbox_rect.y =player_position.y
+        # Получаем прямоугольник хитбокса с учетом смещения и позиции персонажа
+        hitbox_rect = player_hitbox.get_rect(player_position)
 
         # Отображаем хитбокс
         pygame.draw.rect(screen, (255, 0, 0), hitbox_rect, 2)
 
-        # Отрисовка деревьев
+    # Отрисовка деревьев
     for tree in trees:
         screen.blit(tree.get_component(RenderComponent).image, (tree.get_component(PositionComponent).x,
                                                                 tree.get_component(PositionComponent).y))
