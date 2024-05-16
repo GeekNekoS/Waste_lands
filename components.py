@@ -8,6 +8,10 @@ class Component:
     pass
 
 
+class TreeComponent(Component):
+    pass
+
+
 class MenuComponent:
     def __init__(self, items, options, position):
         self.items = items
@@ -128,12 +132,13 @@ class SoundComponent(Component):
         self.sound.play()
 
 
-class HitboxComponent:
-    def __init__(self, x_offset, y_offset, width, height):
-        self.x_offset = x_offset  # Смещение по оси X относительно позиции сущности
-        self.y_offset = y_offset  # Смещение по оси Y относительно позиции сущности
-        self.width = width  # Ширина хитбокса
-        self.height = height  # Высота хитбокса
+class HitboxComponent(Component):
+    def __init__(self, width, height, offset_x=0, offset_y=0):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.offset_x = offset_x
+        self.offset_y = offset_y
 
     def get_rect(self, position):
         # Создаем прямоугольник хитбокса с учетом смещения и позиции сущности
@@ -176,4 +181,3 @@ class AnimationComponent(Component):
 
     def get_current_frame(self):
         return self.frames[self.current_frame]
-
