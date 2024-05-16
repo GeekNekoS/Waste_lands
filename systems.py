@@ -1,5 +1,10 @@
-from components import PositionComponent, VelocityComponent, RenderComponent
 import pygame
+from components import (
+    PositionComponent,
+    VelocityComponent,
+    RenderComponent,
+    InventoryComponent
+)
 
 
 class System:
@@ -34,3 +39,16 @@ class CollisionSystem(System):
         for entity in entities:
             pos = entity.get_component(PositionComponent)
             # Implement collision detection logic here
+
+
+class InventorySystem:
+    def __init__(self):
+        pass
+
+    def update(self, entities, screen):
+        for entity in entities:
+            inventory_component = entity.get_component(InventoryComponent)
+            position_component = entity.get_component(PositionComponent)  # Предположим, что у инвентаря есть позиция
+            if inventory_component and position_component:
+                # Рисуем инвентарь в позиции сущности
+                inventory_component.draw_inventory(screen, position_component.x, position_component.y, 200, 200)

@@ -1,6 +1,4 @@
 import pygame
-import random
-from animation import AnimationComponent
 from systems import MovementSystem, RenderSystem, CollisionSystem
 from quadtree import QuadTree
 from game_state import GameState
@@ -11,8 +9,9 @@ from components import (
     VelocityComponent,
     RenderComponent,
     InventoryComponent,
-    SoundComponent,
-    FootstepsComponent
+    AnimationComponent,
+    FootstepsComponent,
+    SoundComponent
 )
 
 pygame.init()
@@ -38,6 +37,8 @@ player = Entity()
 player.add_component(PositionComponent(100, 100))
 player.add_component(VelocityComponent(0, 0))
 
+player.add_component(InventoryComponent(4))
+
 # Загрузка спрайтов для анимации движения в разные стороны
 down_sprites = [pygame.image.load(f'sprites/player/down_{i}.png') for i in range(1, 5)]
 up_sprites = [pygame.image.load(f'sprites/player/up_{i}.png') for i in range(1, 5)]
@@ -59,7 +60,6 @@ current_sprites = animation_sprites[current_direction]
 # Добавление компонентов
 player.add_component(RenderComponent(current_sprites))
 player.add_component(AnimationComponent(current_sprites, 0.285))
-player.add_component(InventoryComponent(4))
 player.add_component(FootstepsComponent())
 player.add_component(HitboxComponent(17, 40, 31, 25))  # Добавление хитбокса для персонажа
 
@@ -90,6 +90,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                # Перемещение активной ячейки влево
+                player.get_component(InventoryComponent).move_active_slot(-1)
+            elif event.key == pygame.K_RIGHT:
+                # Перемещение активной ячейки вправо
+                player.get_component(InventoryComponent).move_active_slot(1)
 
     # Установка скорости в зависимости от нажатых клавиш
     vx = (key_pressed[pygame.K_d] - key_pressed[pygame.K_a]) * 1
@@ -133,6 +140,9 @@ while running:
     # Отрисовка персонажа и деревьев
     screen.blit(player.get_component(AnimationComponent).frames[player.get_component(AnimationComponent).current_frame],
                 (player.get_component(PositionComponent).x, player.get_component(PositionComponent).y))
+
+    # Отрисовка инвентаря
+    player.get_component(InventoryComponent).draw_inventory(screen, WIDTH, HEIGHT)
 
     # Отладочная отрисовка хитбокса
     if debug:
