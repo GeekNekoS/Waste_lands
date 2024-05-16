@@ -1,3 +1,4 @@
+import sys
 import pygame
 from systems import MovementSystem, RenderSystem, CollisionSystem
 from quadtree import QuadTree
@@ -11,6 +12,7 @@ from components import (
     InventoryComponent,
     AnimationComponent,
     FootstepsComponent,
+    MenuComponent,
     SoundComponent
 )
 
@@ -36,8 +38,14 @@ class Entity:
 player = Entity()
 player.add_component(PositionComponent(100, 100))
 player.add_component(VelocityComponent(0, 0))
-
 player.add_component(InventoryComponent(4))
+
+# Создание сущности меню
+menu = Entity()
+menu_position = (0, 0)  # Установка позиции меню
+menu.add_component(MenuComponent(["Start", "Options", "Quit"], ["Start Game", "Options", "Quit Game"], (0, 0)))
+menu.add_component(PositionComponent(*menu_position))  # Добавление компонента позиции с указанием позиции меню
+menu.add_component(RenderComponent(None))  # В этом примере меню не имеет спрайта, поэтому передаем None
 
 # Загрузка спрайтов для анимации движения в разные стороны
 down_sprites = [pygame.image.load(f'sprites/player/down_{i}.png') for i in range(1, 5)]
@@ -78,6 +86,8 @@ game_state = GameState()
 # Инициализация флагов для отслеживания нажатия и отпускания клавиш
 key_pressed = {pygame.K_a: False, pygame.K_d: False, pygame.K_w: False, pygame.K_s: False}
 
+valid_entities = [player] + trees + [menu]
+menu_visible = False
 running = True
 while running:
     dt = clock.tick(FPS) / 1000  # время между кадрами в секундах
@@ -86,17 +96,51 @@ while running:
     for key in key_pressed:
         key_pressed[key] = pygame.key.get_pressed()[key]
 
-    # Обработка событий клавиатуры
+    menu_entities = [entity for entity in valid_entities if entity.get_component(MenuComponent)]
+
+    # Обработка событий клавиатуры для меню
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                # Перемещение активной ячейки влево
-                player.get_component(InventoryComponent).move_active_slot(-1)
-            elif event.key == pygame.K_RIGHT:
-                # Перемещение активной ячейки вправо
-                player.get_component(InventoryComponent).move_active_slot(1)
+            # Если меню видимо
+            if menu_visible:
+                for entity in menu_entities:
+                    menu_component = entity.get_component(MenuComponent)
+                    if menu_component:
+                        # Переключение между пунктами меню при нажатии клавиш вверх и вниз
+                        if event.key == pygame.K_UP:
+                            menu_component.move_selection(-1)
+                        elif event.key == pygame.K_DOWN:
+                            menu_component.move_selection(1)
+                        # Выбор пункта меню при нажатии клавиши ENTER
+                        elif event.key == pygame.K_RETURN:
+                            selected_option = menu_component.options[menu_component.selected_option]
+                            if selected_option == "Start Game":
+                                game_state.state = 'game'
+                            elif selected_option == "Options":
+                                # Логика для перехода к экрану опций
+                                pass
+                            elif selected_option == "Quit Game":
+                                pygame.quit()
+                                sys.exit()
+            else:
+                # Если меню не видимо, переключение видимости при нажатии клавиши ESC
+                if event.key == pygame.K_ESCAPE:
+                    menu_visible = not menu_visible
+                if event.key == pygame.K_LEFT:
+                    # Перемещение активной ячейки влево
+                    player.get_component(InventoryComponent).move_active_slot(-1)
+                elif event.key == pygame.K_RIGHT:
+                    # Перемещение активной ячейки вправо
+                    player.get_component(InventoryComponent).move_active_slot(1)
+
+    if menu_visible:
+        # Отображаем меню и ставим игру на паузу
+        game_state.pause()  # Пауза игры
+    else:
+        # Обычный игровой процесс
+        game_state.resume()  # Возобновление игры
 
     # Установка скорости в зависимости от нажатых клавиш
     vx = (key_pressed[pygame.K_d] - key_pressed[pygame.K_a]) * 1
@@ -161,11 +205,8 @@ while running:
         screen.blit(tree.get_component(RenderComponent).image, (tree.get_component(PositionComponent).x,
                                                                 tree.get_component(PositionComponent).y))
 
-    valid_entities = [player]
-    for tree in trees:
-        valid_entities.append(tree)
-
-    render_system.update(valid_entities, screen)
+    # Обновление системы отрисовки для меню
+    render_system.render_menu(screen, menu_entities, menu_visible)
 
     pygame.display.flip()
 

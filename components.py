@@ -1,10 +1,51 @@
 import pygame
 import random
 import os
+import sys
 
 
 class Component:
     pass
+
+
+class MenuComponent:
+    def __init__(self, items, options, position):
+        self.items = items
+        self.options = options
+        self.position = position
+        self.selected_option = 0
+
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.selected_option = (self.selected_option - 1) % len(self.options)
+            elif event.key == pygame.K_DOWN:
+                self.selected_option = (self.selected_option + 1) % len(self.options)
+            elif event.key == pygame.K_RETURN:
+                selected_item = self.options[self.selected_option]
+                if selected_item == "Start":
+                    return "game"
+                elif selected_item == "Options":
+                    # Логика для перехода к экрану опций
+                    pass
+                elif selected_item == "Quit":
+                    pygame.quit()
+                    sys.exit()
+        return None
+
+    def draw(self, screen):
+        menu_font = pygame.font.Font(None, 36)
+        for i, item in enumerate(self.items):
+            color = (255, 255, 255)
+            if i == self.selected_option:
+                color = (255, 0, 0)  # Цвет выделенного пункта меню
+            menu_text = menu_font.render(item, True, color)
+            x = self.position[0]
+            y = self.position[1] + i * 50
+            screen.blit(menu_text, (x, y))
+
+    def move_selection(self, direction):
+        self.selected_option = (self.selected_option + direction) % len(self.options)
 
 
 class InventoryComponent:
@@ -31,7 +72,7 @@ class InventoryComponent:
 
         # Рисуем слоты
         for i in range(self.max_slots):
-            slot_x = panel_x + i * (self.slot_width + self.slot_padding) + self.slot_padding
+            slot_x = panel_x + i * (self.slot_width + self.slot_padding)
             slot_y = panel_y + self.slot_padding
             slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
             if self.active_slot_index == i:
@@ -64,10 +105,10 @@ class FootstepsComponent:
     def __init__(self):
         self.footstep_sounds = [
             pygame.mixer.Sound(os.path.join('sounds', 'footsteps', 'ground', f'step_{i}.wav'))
-            for i in range(1, 13)
+            for i in range(1, 9)
         ]
         self.current_sound = None
-        self.volume = 0.5  # Начальная громкость звуков шагов
+        self.volume = 0.25  # Начальная громкость звуков шагов
 
     def play_footstep(self, animation_component):
         current_frame_index = animation_component.current_frame
