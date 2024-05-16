@@ -9,7 +9,8 @@ from components import (
     FootstepsComponent,
     HitboxComponent,
     MenuComponent,
-    TreeComponent
+    TreeComponent,
+    AxeComponent
 )
 from quadtree import QuadTree
 from settings import WIDTH, HEIGHT
@@ -84,13 +85,32 @@ def create_menu():
     return menu
 
 
+def create_axe(x, y, scale=0.5, hitbox_width=20, hitbox_height=20, hitbox_offset_x=10, hitbox_offset_y=10):
+    axe = Entity()
+    axe.add_component(AxeComponent())
+    original_image = pygame.image.load('sprites/items/axe.png')  # Загрузите текстуру топора
+    axe_image = pygame.transform.scale(original_image, (
+        int(original_image.get_width() * scale), int(original_image.get_height() * scale)))
+    axe.add_component(PositionComponent(x, y))
+    axe.add_component(RenderComponent(axe_image))
+
+    # Создание и добавление хитбокса для топора
+    axe_hitbox = HitboxComponent(hitbox_width, hitbox_height, hitbox_offset_x, hitbox_offset_y)
+    axe.add_component(axe_hitbox)
+
+    return axe
+
+
 def initialize_entities():
     player, animation_sprites = create_player()
     trees = [create_tree(random.randint(0, WIDTH), random.randint(0, HEIGHT)) for _ in range(15)]
 
+    # Создание топора
+    axe = create_axe(random.randint(0, WIDTH), random.randint(0, HEIGHT))
+
     # Сортировка деревьев по координатам y и верхним границам хитбоксов
     trees.sort(key=lambda tree: (tree.get_component(PositionComponent).y +
-                                  tree.get_component(HitboxComponent).offset_y))
+                                 tree.get_component(HitboxComponent).offset_y))
 
     # Создаем QuadTree и добавляем деревья
     quadtree = QuadTree(pygame.Rect(0, 0, WIDTH, HEIGHT), 4)
@@ -100,4 +120,7 @@ def initialize_entities():
 
     menu = create_menu()
 
-    return player, trees, quadtree, animation_sprites, menu
+    # Добавляем топор в список допустимых сущностей
+    valid_entities = [player] + trees + [axe, menu]
+
+    return player, trees, axe, quadtree, animation_sprites, menu, valid_entities

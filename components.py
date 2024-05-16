@@ -12,7 +12,12 @@ class TreeComponent(Component):
     pass
 
 
-class MenuComponent:
+class AxeComponent(Component):
+    def __init__(self):
+        pass
+
+
+class MenuComponent(Component):
     def __init__(self, items, options, position):
         self.items = items
         self.options = options
@@ -52,7 +57,7 @@ class MenuComponent:
         self.selected_option = (self.selected_option + direction) % len(self.options)
 
 
-class InventoryComponent:
+class InventoryComponent(Component):
     def __init__(self, max_slots):
         self.max_slots = max_slots
         self.items = [None] * max_slots
@@ -105,7 +110,7 @@ class InventoryComponent:
         self.active_slot_index = index
 
 
-class FootstepsComponent:
+class FootstepsComponent(Component):
     def __init__(self):
         self.footstep_sounds = [
             pygame.mixer.Sound(os.path.join('sounds', 'footsteps', 'ground', f'step_{i}.wav'))

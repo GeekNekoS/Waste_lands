@@ -1,9 +1,9 @@
 ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python)&nbsp;
 
-## *PIXEL CRAFT*
-Прогресс: [██░░░░░░░] 20%
+## *PIXELRIM*
+Пиксельный мини Skyrim
 
-Пока что игрушка без жанра
+Прогресс: [██░░░░░░░] 20%
 <br /> <br />
 
 
@@ -18,7 +18,7 @@
 
 <a name="setting_up_a_project"></a> 
 ## Настройка готового проекта
- - Версия Python: 3.10.11
+ - Версия Python: 3.11.8
  - После скачивания проекта к себе на компьютер не забудьте установить необходимые зависимости, прописав к консоли команду:  `pip install -r requirements.txt`
 <br /> <br />
 

@@ -1,5 +1,6 @@
 import sys
 import pygame
+from utils import draw_debug_line
 from systems import MovementSystem, RenderSystem, CollisionSystem
 from game_state import GameState
 from settings import debug, WIDTH, HEIGHT, FPS
@@ -12,8 +13,23 @@ from components import (
     PositionComponent,
     FootstepsComponent,
     RenderComponent,
-    HitboxComponent
+    HitboxComponent,
+    AxeComponent
 )
+
+
+def handle_pickup(player, entities, picked_items, valid_entities):
+    for entity in entities:
+        if entity.get_component(AxeComponent):
+            player_inventory = player.get_component(InventoryComponent)
+            if player_inventory:
+                player_inventory.add_item("Axe")  # Добавляем топор в инвентарь
+                print('Предмет добавлен в инвентарь')
+                entities.remove(entity)  # Удаляем топор из мира
+                picked_items.append(entity)  # Добавляем подобранный предмет в список picked_items
+                valid_entities.remove(entity)  # Обновляем список валидных сущностей
+                return  # Прерываем цикл после подбора топора, чтобы избежать удаления других предметов
+
 
 pygame.init()
 
@@ -22,7 +38,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 # Создание игровых сущностей
-player, trees, quadtree, animation_sprites, menu = initialize_entities()
+player, trees, axe, quadtree, animation_sprites, menu, valid_entities = initialize_entities()
 
 # Инициализация систем
 movement_system = MovementSystem()
@@ -36,9 +52,10 @@ game_state = GameState()
 key_pressed = {pygame.K_a: False, pygame.K_d: False, pygame.K_w: False, pygame.K_s: False}
 
 current_direction = 'down'
-
 valid_entities = [player] + trees + [menu]
+picked_items = []  # Список подобранных предметов
 menu_visible = False
+
 running = True
 while running:
     dt = clock.tick(FPS) / 1000  # время между кадрами в секундах
@@ -53,7 +70,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
+
+        if event.type == pygame.KEYDOWN:
+            # Проверяем нажатие клавиши "E" для подбора предмета
+            if event.key == pygame.K_e:
+                handle_pickup(player, valid_entities, picked_items, valid_entities)
+
             # Если меню видимо
             if menu_visible:
                 for entity in menu_entities:
@@ -102,7 +124,7 @@ while running:
         player_velocity.vx = vx
         player_velocity.vy = vy
 
-    # Установка направления движения
+    # Установка направления движения, чтобы определить анимацию персонажа
     if vx != 0:
         current_direction = 'right' if vx > 0 else 'left'
     elif vy != 0:
@@ -126,8 +148,12 @@ while running:
     screen.fill((0, 0, 0))
 
     # Отрисовка персонажа
-    screen.blit(player.get_component(AnimationComponent).frames[player.get_component(AnimationComponent).current_frame],
-                (player.get_component(PositionComponent).x, player.get_component(PositionComponent).y))
+    screen.blit(
+        player.get_component(AnimationComponent).frames[player.get_component(AnimationComponent).current_frame],
+        (player.get_component(PositionComponent).x, player.get_component(PositionComponent).y))
+
+    # Отрисовка линии от персонажа до топора при включенном режиме отладки (debug)
+    draw_debug_line(screen, player, axe)
 
     # Отрисовка персонажа и деревьев
     for tree in trees:
@@ -147,14 +173,22 @@ while running:
             else:
                 screen.blit(tree_render.image, (tree_position.x, tree_position.y))
 
+    # Отрисовка топора
+    axe_position = axe.get_component(PositionComponent)
+    axe_hitbox = axe.get_component(HitboxComponent)
+    axe_render = axe.get_component(RenderComponent)
+    if axe_render.image:
+        screen.blit(axe_render.image, (axe_position.x, axe_position.y))
+
     # Отладочная отрисовка хитбокса
     if debug:
         # Рисуем хитбоксы для деревьев
         for tree in trees:
             tree_position = tree.get_component(PositionComponent)
             tree_hitbox = tree.get_component(HitboxComponent)
-            pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(tree_position.x + tree_hitbox.offset_x, tree_position.y + tree_hitbox.offset_y,
-                                                          tree_hitbox.width, tree_hitbox.height), 2)
+            pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(tree_position.x + tree_hitbox.offset_x,
+                                                              tree_position.y + tree_hitbox.offset_y,
+                                                              tree_hitbox.width, tree_hitbox.height), 2)
 
         # Получаем компоненты позиции и хитбокса персонажа
         player_position = player.get_component(PositionComponent)
