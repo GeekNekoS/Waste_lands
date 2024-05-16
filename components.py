@@ -8,7 +8,21 @@ class Component:
     pass
 
 
-class MenuComponent:
+class TreeComponent(Component):
+    pass
+
+
+class IconComponent(Component):
+    def __init__(self, icon):
+        self.icon = icon
+
+
+class AxeComponent(Component):
+    def __init__(self):
+        self.name = "Axe"
+
+
+class MenuComponent(Component):
     def __init__(self, items, options, position):
         self.items = items
         self.options = options
@@ -48,7 +62,7 @@ class MenuComponent:
         self.selected_option = (self.selected_option + direction) % len(self.options)
 
 
-class InventoryComponent:
+class InventoryComponent(Component):
     def __init__(self, max_slots):
         self.max_slots = max_slots
         self.items = [None] * max_slots
@@ -56,6 +70,13 @@ class InventoryComponent:
         self.slot_height = 40
         self.slot_padding = 2
         self.active_slot_index = None
+
+    def add_item(self, item):
+        # Find the first empty slot and add the item
+        for i in range(self.max_slots):
+            if self.items[i] is None:
+                self.items[i] = item
+                break
 
     def draw_inventory(self, screen, width, height):
         # Определяем ширину и высоту панели инвентаря
@@ -101,7 +122,7 @@ class InventoryComponent:
         self.active_slot_index = index
 
 
-class FootstepsComponent:
+class FootstepsComponent(Component):
     def __init__(self):
         self.footstep_sounds = [
             pygame.mixer.Sound(os.path.join('sounds', 'footsteps', 'ground', f'step_{i}.wav'))
@@ -128,12 +149,13 @@ class SoundComponent(Component):
         self.sound.play()
 
 
-class HitboxComponent:
-    def __init__(self, x_offset, y_offset, width, height):
-        self.x_offset = x_offset  # Смещение по оси X относительно позиции сущности
-        self.y_offset = y_offset  # Смещение по оси Y относительно позиции сущности
-        self.width = width  # Ширина хитбокса
-        self.height = height  # Высота хитбокса
+class HitboxComponent(Component):
+    def __init__(self, width, height, offset_x=0, offset_y=0):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.offset_x = offset_x
+        self.offset_y = offset_y
 
     def get_rect(self, position):
         # Создаем прямоугольник хитбокса с учетом смещения и позиции сущности
@@ -176,4 +198,3 @@ class AnimationComponent(Component):
 
     def get_current_frame(self):
         return self.frames[self.current_frame]
-

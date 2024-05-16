@@ -1,9 +1,9 @@
 ![Python](https://img.shields.io/badge/-Python-05122A?style=flat&logo=python)&nbsp;
 
-## *PIXEL CRAFT*
-Прогресс: [██░░░░░░░] 20%
+## *PIXELRIM*
+Пиксельный мини Skyrim
 
-Пока что игрушка без жанра
+Прогресс: [██░░░░░░░] 20%
 <br /> <br />
 
 
@@ -18,7 +18,7 @@
 
 <a name="setting_up_a_project"></a> 
 ## Настройка готового проекта
- - Версия Python: 3.11
+ - Версия Python: 3.11.8
  - После скачивания проекта к себе на компьютер не забудьте установить необходимые зависимости, прописав к консоли команду:  `pip install -r requirements.txt`
 <br /> <br />
 
@@ -74,6 +74,13 @@
 
 <a name="nekos_music"></a>
 ## Музычка для разработки [Neko's edition]
+<details>
+  <summary>
+    <a href='https://www.youtube.com/watch?v=sD-FEPismf4'>Deep house sunrise mix under palm trees</a>
+  </summary>
+  <img src='data_for_readme/deep_house_sunrise_mix_under_palm_trees.png'></img>
+</details>
+
 <details>
   <summary>
     <a href='https://www.youtube.com/watch?v=ZpK0UqP7T-g'>Calming house mix</a>
