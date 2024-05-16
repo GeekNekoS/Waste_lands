@@ -7,6 +7,59 @@ class Component:
     pass
 
 
+class InventoryComponent:
+    def __init__(self, max_slots):
+        self.max_slots = max_slots
+        self.items = [None] * max_slots
+        self.slot_width = 40
+        self.slot_height = 40
+        self.slot_padding = 2
+        self.active_slot_index = None
+
+    def draw_inventory(self, screen, width, height):
+        # Определяем ширину и высоту панели инвентаря
+        panel_width = self.max_slots * (self.slot_width + self.slot_padding) - self.slot_padding
+        panel_height = self.slot_height + 2 * self.slot_padding
+
+        # Рассчитываем координаты верхнего левого угла панели инвентаря
+        panel_x = (width - panel_width) // 2
+        panel_y = self.slot_padding
+
+        # Отрисовка фона инвентаря
+        panel_rect = pygame.Rect(panel_x, panel_y, panel_width, panel_height)
+        pygame.draw.rect(screen, (100, 100, 100), panel_rect)
+
+        # Рисуем слоты
+        for i in range(self.max_slots):
+            slot_x = panel_x + i * (self.slot_width + self.slot_padding) + self.slot_padding
+            slot_y = panel_y + self.slot_padding
+            slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
+            if self.active_slot_index == i:
+                pygame.draw.rect(screen, (255, 255, 255), slot_rect, 3)  # Отрисовываем активный слот
+            else:
+                pygame.draw.rect(screen, (255, 255, 255), slot_rect, 1)  # Отрисовываем обычный слот
+
+            # Рисуем предметы в слотах инвентаря
+            item = self.items[i]
+            if item:
+                screen.blit(item.icon, (slot_x, slot_y))
+
+    def move_active_slot(self, direction):
+        if self.active_slot_index is None:
+            self.active_slot_index = 0
+        else:
+            self.active_slot_index += direction
+            self.active_slot_index %= self.max_slots
+
+    def update_inventory(self, new_inventory):
+        # Обновляем инвентарь
+        self.items = new_inventory
+
+    def set_active_slot_index(self, index):
+        # Устанавливаем индекс активной ячейки
+        self.active_slot_index = index
+
+
 class FootstepsComponent:
     def __init__(self):
         self.footstep_sounds = [
@@ -14,7 +67,7 @@ class FootstepsComponent:
             for i in range(1, 13)
         ]
         self.current_sound = None
-        self.volume = 0.15  # Начальная громкость звуков шагов
+        self.volume = 0.5  # Начальная громкость звуков шагов
 
     def play_footstep(self, animation_component):
         current_frame_index = animation_component.current_frame
@@ -67,13 +120,19 @@ class RenderComponent(Component):
         self.image = image
 
 
-class InventoryComponent(Component):
-    def __init__(self, max_slots):
-        self.inventory = []
-        self.max_slots = max_slots
+class AnimationComponent(Component):
+    def __init__(self, frames, frame_rate):
+        self.frames = frames
+        self.frame_rate = frame_rate
+        self.current_frame = 0
+        self.time_since_last_frame = 0
 
-    def add_item(self, item):
-        if len(self.inventory) < self.max_slots:
-            self.inventory.append(item)
-            return True
-        return False
+    def update(self, dt):
+        self.time_since_last_frame += dt
+        if self.time_since_last_frame >= self.frame_rate:
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+            self.time_since_last_frame = 0
+
+    def get_current_frame(self):
+        return self.frames[self.current_frame]
+
