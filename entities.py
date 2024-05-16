@@ -85,23 +85,22 @@ def create_menu():
     return menu
 
 
-def create_axe(x, y, scale=0.5, hitbox_width=20, hitbox_height=20, hitbox_offset_x=10, hitbox_offset_y=10):
+def create_axe(x, y, scale=1, hitbox_width=20, hitbox_height=20, hitbox_offset_x=10, hitbox_offset_y=10):
     axe = Entity()
-    axe.add_component(AxeComponent())
-    original_image = pygame.image.load('sprites/items/axe.png')  # Загрузите текстуру топора
-    axe_image = pygame.transform.scale(original_image, (
-        int(original_image.get_width() * scale), int(original_image.get_height() * scale)))
+    axe_component = AxeComponent()
+
+    # axe_component.icon = pygame.transform.scale(axe_component.icon, (
+    #     int(axe_component.icon.get_width() * scale), int(axe_component.icon.get_height() * scale)))
+
+    axe.add_component(axe_component)
     axe.add_component(PositionComponent(x, y))
-    render_component = RenderComponent(axe_image)
+    render_component = RenderComponent(axe_component.icon)
     axe.add_component(render_component)
 
-    # Создание и добавление хитбокса для топора
     axe_hitbox = HitboxComponent(hitbox_width, hitbox_height, hitbox_offset_x, hitbox_offset_y)
     axe.add_component(axe_hitbox)
 
-    # Устанавливаем изображение топора в качестве его иконки
-    axe.get_component(AxeComponent).icon = axe_image
-
+    print(f"Axe created with component: {axe_component} and icon: {axe_component.icon}")
     return axe
 
 

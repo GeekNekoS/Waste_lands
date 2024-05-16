@@ -17,23 +17,34 @@ from components import (
     AxeComponent
 )
 
+import random
+from entities import create_axe
 
-def handle_pickup(player, entities, picked_items, valid_entities):
-    found_axe = False  # Флаг для обозначения нахождения топора
-    for entity in valid_entities:
-        axe_component = entity.get_component(AxeComponent)
-        if axe_component and axe_component.name == "Axe":
+
+def handle_pickup(player, valid_entities, picked_items):
+    player_hitbox = player.get_component(HitboxComponent)
+    player_position = player.get_component(PositionComponent)
+
+    if not player_hitbox or not player_position:
+        return
+
+    for entity in valid_entities[:]:  # Проходим по копии списка, чтобы избежать проблем с удалением во время итерации
+        if entity in picked_items:
+            continue
+
+        entity_hitbox = entity.get_component(HitboxComponent)
+        entity_position = entity.get_component(PositionComponent)
+
+        if not entity_hitbox or not entity_position:
+            continue
+
+        if player_hitbox.get_rect(player_position).colliderect(entity_hitbox.get_rect(entity_position)):
             player_inventory = player.get_component(InventoryComponent)
-            if player_inventory:
-                player_inventory.add_item("Axe")  # Добавляем топор в инвентарь
-                print('Найден топор')
-                entities.remove(entity)  # Удаляем топор из мира
-                picked_items.append(entity)  # Добавляем подобранный предмет в список picked_items
-                found_axe = True  # Устанавливаем флаг в True, так как топор найден
-                break  # Прерываем цикл после нахождения топора
-
-    if not found_axe:  # Если топор не найден
-        print('Топор не найден')
+            if player_inventory.add_item(entity):
+                picked_items.append(entity)
+                valid_entities.remove(entity)
+                print(f"Picked up item: {entity}")
+                break
 
 
 pygame.init()
@@ -82,7 +93,8 @@ while running:
             # Проверяем нажатие клавиши "E" для подбора предмета
             if event.key == pygame.K_e:
                 print("Список сущностей перед вызовом функции handle_pickup:", valid_entities)
-                handle_pickup(player, valid_entities, picked_items, valid_entities)
+                # Обновление состояния игры
+                handle_pickup(player, valid_entities, picked_items)
                 print('Количество подобранных предметов после подбора топора:', len(picked_items))
 
             # Если меню видимо
