@@ -19,16 +19,21 @@ from components import (
 
 
 def handle_pickup(player, entities, picked_items, valid_entities):
-    for entity in entities:
-        if entity.get_component(AxeComponent):
+    found_axe = False  # Флаг для обозначения нахождения топора
+    for entity in valid_entities:
+        axe_component = entity.get_component(AxeComponent)
+        if axe_component and axe_component.name == "Axe":
             player_inventory = player.get_component(InventoryComponent)
             if player_inventory:
                 player_inventory.add_item("Axe")  # Добавляем топор в инвентарь
-                print('Предмет добавлен в инвентарь')
+                print('Найден топор')
                 entities.remove(entity)  # Удаляем топор из мира
                 picked_items.append(entity)  # Добавляем подобранный предмет в список picked_items
-                valid_entities.remove(entity)  # Обновляем список валидных сущностей
-                return  # Прерываем цикл после подбора топора, чтобы избежать удаления других предметов
+                found_axe = True  # Устанавливаем флаг в True, так как топор найден
+                break  # Прерываем цикл после нахождения топора
+
+    if not found_axe:  # Если топор не найден
+        print('Топор не найден')
 
 
 pygame.init()
@@ -52,10 +57,12 @@ game_state = GameState()
 key_pressed = {pygame.K_a: False, pygame.K_d: False, pygame.K_w: False, pygame.K_s: False}
 
 current_direction = 'down'
-valid_entities = [player] + trees + [menu]
+valid_entities = [player] + trees + [axe, menu]
 picked_items = []  # Список подобранных предметов
 menu_visible = False
 
+print('Начальное количество подобранных предметов:', len(picked_items))
+print("Вызов функции handle_pickup перед циклом while")
 running = True
 while running:
     dt = clock.tick(FPS) / 1000  # время между кадрами в секундах
@@ -74,7 +81,9 @@ while running:
         if event.type == pygame.KEYDOWN:
             # Проверяем нажатие клавиши "E" для подбора предмета
             if event.key == pygame.K_e:
+                print("Список сущностей перед вызовом функции handle_pickup:", valid_entities)
                 handle_pickup(player, valid_entities, picked_items, valid_entities)
+                print('Количество подобранных предметов после подбора топора:', len(picked_items))
 
             # Если меню видимо
             if menu_visible:

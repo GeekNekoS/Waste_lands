@@ -12,9 +12,14 @@ class TreeComponent(Component):
     pass
 
 
+class IconComponent(Component):
+    def __init__(self, icon):
+        self.icon = icon
+
+
 class AxeComponent(Component):
     def __init__(self):
-        pass
+        self.name = "Axe"
 
 
 class MenuComponent(Component):
@@ -65,6 +70,13 @@ class InventoryComponent(Component):
         self.slot_height = 40
         self.slot_padding = 2
         self.active_slot_index = None
+
+    def add_item(self, item):
+        # Find the first empty slot and add the item
+        for i in range(self.max_slots):
+            if self.items[i] is None:
+                self.items[i] = item
+                break
 
     def draw_inventory(self, screen, width, height):
         # Определяем ширину и высоту панели инвентаря

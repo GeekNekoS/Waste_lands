@@ -92,11 +92,15 @@ def create_axe(x, y, scale=0.5, hitbox_width=20, hitbox_height=20, hitbox_offset
     axe_image = pygame.transform.scale(original_image, (
         int(original_image.get_width() * scale), int(original_image.get_height() * scale)))
     axe.add_component(PositionComponent(x, y))
-    axe.add_component(RenderComponent(axe_image))
+    render_component = RenderComponent(axe_image)
+    axe.add_component(render_component)
 
     # Создание и добавление хитбокса для топора
     axe_hitbox = HitboxComponent(hitbox_width, hitbox_height, hitbox_offset_x, hitbox_offset_y)
     axe.add_component(axe_hitbox)
+
+    # Устанавливаем изображение топора в качестве его иконки
+    axe.get_component(AxeComponent).icon = axe_image
 
     return axe
 

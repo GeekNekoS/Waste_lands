@@ -76,6 +76,13 @@
 ## Музычка для разработки [Neko's edition]
 <details>
   <summary>
+    <a href='https://www.youtube.com/watch?v=sD-FEPismf4'>Deep house sunrise mix under palm trees</a>
+  </summary>
+  <img src='data_for_readme/deep_house_sunrise_mix_under_palm_trees.png'></img>
+</details>
+
+<details>
+  <summary>
     <a href='https://www.youtube.com/watch?v=ZpK0UqP7T-g'>Calming house mix</a>
   </summary>
   <img src='data_for_readme/calming_house_mix.png'></img>
