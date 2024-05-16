@@ -106,7 +106,8 @@ class InventoryComponent(Component):
 
             item = self.items[i]
             if item:
-                if hasattr(item, 'get_component'):  # Проверяем, что item имеет метод get_component
+                print(f"Item in slot {i}: {item}")  # Добавленное отладочное сообщение
+                if hasattr(item, 'get_component'):  # Проверяем, имеет ли объект метод get_component
                     axe_component = item.get_component(AxeComponent)
                     if axe_component and axe_component.icon:
                         screen.blit(axe_component.icon, (slot_x, slot_y))

@@ -28,7 +28,7 @@ def handle_pickup(player, valid_entities, picked_items):
     if not player_hitbox or not player_position:
         return
 
-    for entity in valid_entities[:]:  # Проходим по копии списка, чтобы избежать проблем с удалением во время итерации
+    for entity in valid_entities:
         if entity in picked_items:
             continue
 
@@ -38,13 +38,13 @@ def handle_pickup(player, valid_entities, picked_items):
         if not entity_hitbox or not entity_position:
             continue
 
-        if player_hitbox.get_rect(player_position).colliderect(entity_hitbox.get_rect(entity_position)):
-            player_inventory = player.get_component(InventoryComponent)
-            if player_inventory.add_item(entity):
-                picked_items.append(entity)
-                valid_entities.remove(entity)
-                print(f"Picked up item: {entity}")
-                break
+        # Добавляем сущность в инвентарь игрока
+        player_inventory = player.get_component(InventoryComponent)
+        if player_inventory.add_item(entity):
+            picked_items.append(entity)
+            valid_entities.remove(entity)
+            print(f"Picked up item: {entity}")
+            break
 
 
 pygame.init()
