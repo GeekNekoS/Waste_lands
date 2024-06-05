@@ -1,9 +1,9 @@
 import pygame
 import random
 from settings import debug, WIDTH, HEIGHT
-from game.inventory import Inventory, InventoryPanel
-from game.items import Axe
-from game.utils import detect_item_pickup
+from mvc.model.inventory import Inventory, InventoryPanel
+from mvc.model.items import Axe
+from mvc.controller.utils import detect_item_pickup
 
 
 class World:

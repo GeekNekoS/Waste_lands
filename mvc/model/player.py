@@ -1,6 +1,6 @@
-import pygame
 from config import player_sprites
 from settings import debug
+import pygame
 import random
 
 
