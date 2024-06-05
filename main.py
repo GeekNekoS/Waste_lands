@@ -1,10 +1,10 @@
 import pygame
 from pygame.locals import *
 from settings import WIDTH, HEIGHT, FPS
-from game.player import Player, PlayerSounds
-from game.world import World
+from mvc.model.player import Player, PlayerSounds
+from mvc.model.world import World
 import sys
-from game.utils import play_background_music
+from mvc.controller.utils import play_background_music
 
 
 def main():
