@@ -1,6 +1,6 @@
 import pygame
 from settings import debug
-from components import PositionComponent, HitboxComponent
+from old_ecs.components import PositionComponent, HitboxComponent
 
 
 def draw_debug_line(screen, start_entity, end_entity):

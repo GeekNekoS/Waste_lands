@@ -20,7 +20,7 @@ class IconComponent(Component):
 class AxeComponent(Component):
     def __init__(self):
         self.name = "Axe"
-        original_image = pygame.image.load('sprites/items/axe.png')
+        original_image = pygame.image.load('../sprites/items/axe.png')
         scaled_image = pygame.transform.scale(original_image, (int(original_image.get_width() * 0.5), int(original_image.get_height() * 0.5)))
         self.icon = scaled_image
 
@@ -136,7 +136,7 @@ class InventoryComponent(Component):
 class FootstepsComponent(Component):
     def __init__(self):
         self.footstep_sounds = [
-            pygame.mixer.Sound(os.path.join('sounds', 'footsteps', 'ground', f'step_{i}.wav'))
+            pygame.mixer.Sound(os.path.join('../sounds', 'footsteps', 'ground', f'step_{i}.wav'))
             for i in range(1, 9)
         ]
         self.current_sound = None

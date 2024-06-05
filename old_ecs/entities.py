@@ -1,6 +1,6 @@
 import random
 import pygame
-from components import (
+from old_ecs.components import (
     PositionComponent,
     VelocityComponent,
     RenderComponent,
@@ -61,7 +61,7 @@ def create_player():
 
 def create_tree(x, y, scale=0.15, hitbox_width=30, hitbox_height=30, hitbox_offset_x=65, hitbox_offset_y=110):
     tree = Entity()
-    original_image = pygame.image.load('sprites/tree.png')
+    original_image = pygame.image.load('../sprites/tree.png')
     tree_image = pygame.transform.scale(original_image, (
         int(original_image.get_width() * scale), int(original_image.get_height() * scale)))
     tree.add_component(PositionComponent(x, y))
