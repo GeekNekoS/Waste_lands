@@ -1,5 +1,5 @@
 import pygame
-from old_files_darft.config import items_sprites
+from config import items_sprites
 
 
 class Item:
@@ -11,7 +11,7 @@ class Item:
 
 class Axe(Item):
     def __init__(self):
-        super().__init__("Axe", f"../{items_sprites}axe.png")
+        super().__init__("Axe", f"{items_sprites}axe.png")
 
 
 class Sword(Item):

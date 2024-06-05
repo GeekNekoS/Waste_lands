@@ -1,12 +1,10 @@
 import pygame
-from components import (
+from old_ecs.components import (
     PositionComponent,
     VelocityComponent,
     RenderComponent,
     InventoryComponent,
-    MenuComponent,
-    HitboxComponent,
-    TreeComponent
+    MenuComponent
 )
 
 

@@ -21,5 +21,5 @@ def detect_item_pickup(player_rect, axe_rect, player_inventory, axe):
 
 def play_background_music():
     pygame.mixer.init()
-    pygame.mixer.music.load('../sounds/dark-background-sounds.mp3')
+    pygame.mixer.music.load('sounds/dark-background-sounds.mp3')
     pygame.mixer.music.play(-1)

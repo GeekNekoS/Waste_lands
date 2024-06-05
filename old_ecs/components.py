@@ -20,6 +20,9 @@ class IconComponent(Component):
 class AxeComponent(Component):
     def __init__(self):
         self.name = "Axe"
+        original_image = pygame.image.load('../sprites/items/axe.png')
+        scaled_image = pygame.transform.scale(original_image, (int(original_image.get_width() * 0.5), int(original_image.get_height() * 0.5)))
+        self.icon = scaled_image
 
 
 class MenuComponent(Component):
@@ -72,39 +75,47 @@ class InventoryComponent(Component):
         self.active_slot_index = None
 
     def add_item(self, item):
-        # Find the first empty slot and add the item
-        for i in range(self.max_slots):
-            if self.items[i] is None:
-                self.items[i] = item
-                break
+        item_component = item.get_component(RenderComponent)  # Получаем компонент RenderComponent из предмета
+        if item_component:
+            # Проверяем, есть ли пустые слоты в инвентаре
+            for i in range(self.max_slots):
+                if self.items[i] is None:
+                    self.items[i] = item_component
+                    print(f"Item added to slot {i}")
+                    return True
+        return False
 
     def draw_inventory(self, screen, width, height):
-        # Определяем ширину и высоту панели инвентаря
         panel_width = self.max_slots * (self.slot_width + self.slot_padding) - self.slot_padding
         panel_height = self.slot_height + 2 * self.slot_padding
 
-        # Рассчитываем координаты верхнего левого угла панели инвентаря
         panel_x = (width - panel_width) // 2
         panel_y = self.slot_padding
 
-        # Отрисовка фона инвентаря
         panel_rect = pygame.Rect(panel_x, panel_y, panel_width, panel_height)
         pygame.draw.rect(screen, (100, 100, 100), panel_rect)
 
-        # Рисуем слоты
         for i in range(self.max_slots):
             slot_x = panel_x + i * (self.slot_width + self.slot_padding)
             slot_y = panel_y + self.slot_padding
             slot_rect = pygame.Rect(slot_x, slot_y, self.slot_width, self.slot_height)
             if self.active_slot_index == i:
-                pygame.draw.rect(screen, (255, 255, 255), slot_rect, 3)  # Отрисовываем активный слот
+                pygame.draw.rect(screen, (255, 255, 255), slot_rect, 3)
             else:
-                pygame.draw.rect(screen, (255, 255, 255), slot_rect, 1)  # Отрисовываем обычный слот
+                pygame.draw.rect(screen, (255, 255, 255), slot_rect, 1)
 
-            # Рисуем предметы в слотах инвентаря
             item = self.items[i]
             if item:
-                screen.blit(item.icon, (slot_x, slot_y))
+                print(f"Item in slot {i}: {item}")  # Добавленное отладочное сообщение
+                if hasattr(item, 'get_component'):  # Проверяем, имеет ли объект метод get_component
+                    axe_component = item.get_component(AxeComponent)
+                    if axe_component and axe_component.icon:
+                        screen.blit(axe_component.icon, (slot_x, slot_y))
+                    print(f"Slot {i} contains item: {axe_component}")
+                else:
+                    print(f"Slot {i} contains item: {item}")  # Выводим информацию о RenderComponent
+            else:
+                print(f"Slot {i} is empty")
 
     def move_active_slot(self, direction):
         if self.active_slot_index is None:
@@ -125,7 +136,7 @@ class InventoryComponent(Component):
 class FootstepsComponent(Component):
     def __init__(self):
         self.footstep_sounds = [
-            pygame.mixer.Sound(os.path.join('sounds', 'footsteps', 'ground', f'step_{i}.wav'))
+            pygame.mixer.Sound(os.path.join('../sounds', 'footsteps', 'ground', f'step_{i}.wav'))
             for i in range(1, 9)
         ]
         self.current_sound = None
@@ -159,7 +170,7 @@ class HitboxComponent(Component):
 
     def get_rect(self, position):
         # Создаем прямоугольник хитбокса с учетом смещения и позиции сущности
-        return pygame.Rect(position.x + self.x_offset, position.y + self.y_offset, self.width, self.height)
+        return pygame.Rect(position.x + self.offset_x, position.y + self.offset_y, self.width, self.height)
 
     def set_offset(self, x_offset, y_offset):
         self.x_offset = x_offset
