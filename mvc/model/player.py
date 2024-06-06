@@ -98,22 +98,22 @@ class Player(pygame.sprite.Sprite):
         dx, dy = 0, 0
         moving = False
 
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:  # Лево
             dx -= self.movement_speed * dt
             self.direction = 'left'
             self.current_sprites = self.sprites['left']
             moving = True
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_d]:  # Право
             dx += self.movement_speed * dt
             self.direction = 'right'
             self.current_sprites = self.sprites['right']
             moving = True
-        elif keys[pygame.K_UP]:
+        elif keys[pygame.K_w]:  # Вверх
             dy -= self.movement_speed * dt
             self.direction = 'up'
             self.current_sprites = self.sprites['up']
             moving = True
-        elif keys[pygame.K_DOWN]:
+        elif keys[pygame.K_s]:  # Вниз
             dy += self.movement_speed * dt
             self.direction = 'down'
             self.current_sprites = self.sprites['down']

@@ -61,12 +61,16 @@ def main():
         world.camera_x = player.rect.x - WIDTH // 2
         world.camera_y = player.rect.y - HEIGHT // 2
 
+        # Обновление состояния мира, включая врагов
+        world.update(player.rect, dt)
+
         # Отрисовка мира с учетом камеры
         screen.fill((0, 0, 0))  # Затемняем весь экран цветом
         world.draw(screen, player, world.camera_x, world.camera_y)
 
-        # Обновление инвентаря в мире
+        # Отрисовка инвентаря поверх остальных элементов
         world.inventory_panel.update_inventory(world.player_inventory)
+        world.inventory_panel.draw(screen)
 
         # Обновление экрана
         pygame.display.flip()
