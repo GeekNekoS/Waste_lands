@@ -6,6 +6,7 @@ from mvc.model.inventory import Inventory, InventoryPanel
 from mvc.model.items import Axe
 from mvc.controller.utils import detect_item_pickup, draw_debug_line_to_tree, distance
 from mvc.controller.perlin_noise import perlin, generate_permutation_table
+from mvc.model.enemy import Enemy
 
 
 class World:
@@ -13,6 +14,7 @@ class World:
         self.tree_image = pygame.image.load('sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
+        self.enemies = []
         self.visibility_radius = 200  # Радиус области видимости перед игроком
 
         # Переменные для шума Перлина
@@ -22,6 +24,7 @@ class World:
         self.permutation = generate_permutation_table(seed=42)
 
         self.generate_terrain()
+        self.enemies = self.generate_enemies()  # Генерация врагов
         self.camera_x = 0
         self.camera_y = 0
 
@@ -37,6 +40,23 @@ class World:
         self.axe = Axe()  # Создаем экземпляр класса Axe
         self.axe_rect = pygame.Rect(0, 0, self.axe.icon.get_width(), self.axe.icon.get_height())
         self.spawn_axe()
+
+        # Определяем флаг для отслеживания подбора предмета в текущем кадре
+        self.item_picked_up_this_frame = False
+
+    def generate_enemies(self):
+        enemies = []
+        sprite_paths = {
+            'up': ['sprites/dragon/up_1.png', 'sprites/dragon/up_2.png', 'sprites/dragon/up_3.png', 'sprites/dragon/up_4.png'],
+            'down': ['sprites/dragon/down_1.png', 'sprites/dragon/down_2.png', 'sprites/dragon/down_3.png', 'sprites/dragon/down_4.png'],
+            'left': ['sprites/dragon/left_1.png', 'sprites/dragon/left_2.png', 'sprites/dragon/left_3.png', 'sprites/dragon/left_4.png'],
+            'right': ['sprites/dragon/right_1.png', 'sprites/dragon/right_2.png', 'sprites/dragon/right_3.png', 'sprites/dragon/right_4.png']
+        }
+        for _ in range(5):
+            x = random.randint(0, WIDTH * 3)
+            y = random.randint(0, HEIGHT * 3)
+            enemies.append(Enemy(x, y, sprite_paths, movement_speed=20))
+        return enemies
 
     def spawn_axe(self):
         # Переменная для хранения коллизий с деревьями
@@ -89,12 +109,6 @@ class World:
             if distance < min_distance:
                 return False
         return True
-
-    # def intersects_with_existing_trees(self, x, y):
-    #     for _, hitbox_rect in self.trees:
-    #         if hitbox_rect.collidepoint(x, y):
-    #             return True
-    #     return False
 
     def generate_perlin_noise(self, width, height, scale):
         shape = (width, height)
@@ -230,6 +244,11 @@ class World:
         # Применяем затемнение к предмету
         screen.blit(object_darkness_surface, (0, 0))
 
+        # Отрисовываем врагов
+        for enemy in self.enemies:
+            print(f"Рисуем врага на позиции ({enemy.x}, {enemy.y})")  # Отладочное сообщение
+            enemy.draw(screen, camera_x, camera_y)
+
     def add_item_to_player_inventory(self, item):
         # Проверяем, есть ли свободное место в инвентаре
         if len(self.player_inventory) < self.player_inventory.max_slots:
@@ -239,16 +258,28 @@ class World:
                 print("Предмет добавлен в инвентарь персонажа.")
                 # Обновляем панель инвентаря после добавления предмета
                 self.inventory_panel.update_inventory(self.player_inventory)
-            else:
-                print("Инвентарь персонажа полон, предмет не добавлен.")
             return success
         else:
-            print("Инвентарь персонажа полон, предмет не добавлен.")
             return False
 
-    def update(self, player_rect):
-        if detect_item_pickup(player_rect, self.axe_rect, self.player_inventory, self.axe):
-            if len(self.player_inventory) < self.player_inventory.max_slots:  # Проверяем, не полон ли инвентарь
-                self.add_item_to_player_inventory(self.axe)  # Добавление предмета в инвентарь
-            else:
-                print("Инвентарь персонажа полон, предмет не подобран.")
+    def update(self, player_rect, dt):
+        # Проверяем, подобран ли предмет и нажата ли клавиша "E"
+        if detect_item_pickup(player_rect, self.axe_rect) and pygame.key.get_pressed()[pygame.K_e]:
+            # Проверяем, не подбирался ли предмет уже в текущем кадре
+            if not self.item_picked_up_this_frame:
+                # Устанавливаем флаг в True, чтобы пометить, что предмет подобран в этом кадре
+                self.item_picked_up_this_frame = True
+                # Проверяем, не полон ли инвентарь игрока
+                if len(self.player_inventory) >= self.player_inventory.max_slots:
+                    print("Инвентарь персонажа полон, предмет не подобран.")
+                else:
+                    # Добавляем топор в инвентарь
+                    self.add_item_to_player_inventory(self.axe)
+        else:
+            # Сбрасываем флаг, если предмет не был подобран в текущем кадре
+            self.item_picked_up_this_frame = False
+
+        # Обновление врагов
+        for enemy in self.enemies:
+            print(f"Обновляем врага на позиции ({enemy.x}, {enemy.y})")  # Отладочное сообщение
+            enemy.update(player_rect, dt)

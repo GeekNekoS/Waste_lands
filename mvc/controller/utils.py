@@ -50,11 +50,11 @@ def draw_debug_line_to_tree(screen, player_rect, trees, camera_x, camera_y):
 #         pygame.draw.line(screen, (0, 255, 0), player_center, tree_center, 1)
 
 
-def detect_item_pickup(player_rect, axe_rect, player_inventory, axe):
-    if axe_rect.colliderect(player_rect):
-        player_inventory.add_item(axe)
-        axe_rect.x = random.randint(0, WIDTH - axe.icon.get_width())
-        axe_rect.y = random.randint(0, HEIGHT - axe.icon.get_height())
+def detect_item_pickup(player_rect, item_rect):
+    # Проверяем, пересекается ли игрок с предметом
+    if player_rect.colliderect(item_rect):
+        return True
+    return False
 
 
 def play_background_music():
