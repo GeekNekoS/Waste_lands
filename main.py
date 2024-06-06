@@ -68,8 +68,9 @@ def main():
         screen.fill((0, 0, 0))  # Затемняем весь экран цветом
         world.draw(screen, player, world.camera_x, world.camera_y)
 
-        # Обновление инвентаря в мире
+        # Отрисовка инвентаря поверх остальных элементов
         world.inventory_panel.update_inventory(world.player_inventory)
+        world.inventory_panel.draw(screen)
 
         # Обновление экрана
         pygame.display.flip()

@@ -282,4 +282,4 @@ class World:
         # Обновление врагов
         for enemy in self.enemies:
             print(f"Обновляем врага на позиции ({enemy.x}, {enemy.y})")  # Отладочное сообщение
-            enemy.update(player_rect, dt)
+            enemy.update(player_rect, dt, self.enemies)

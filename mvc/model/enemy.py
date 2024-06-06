@@ -20,7 +20,7 @@ class Enemy:
             print(f"Loaded {len(sprites[direction])} sprites for direction '{direction}'")  # Отладочное сообщение
         return sprites
 
-    def update(self, player_rect, dt):
+    def update(self, player_rect, dt, enemies):
         move_x, move_y = 0, 0
 
         # Определяем направление игрока относительно дракона
@@ -28,22 +28,39 @@ class Enemy:
             self.direction = 'right'
         elif player_rect.x < self.x:
             self.direction = 'left'
+        if player_rect.y > self.y:
+            if abs(player_rect.y - self.y) > abs(player_rect.x - self.x):
+                self.direction = 'down'
+        elif player_rect.y < self.y:
+            if abs(player_rect.y - self.y) > abs(player_rect.x - self.x):
+                self.direction = 'up'
 
         # Перемещаем дракона по оси X в зависимости от направления
         if self.direction == 'right':
             move_x = self.movement_speed * dt
         elif self.direction == 'left':
             move_x = -self.movement_speed * dt
-
-        # Перемещаем дракона по оси Y
-        if player_rect.y > self.y:
+        elif self.direction == 'down':
             move_y = self.movement_speed * dt
-        elif player_rect.y < self.y:
+        elif self.direction == 'up':
             move_y = -self.movement_speed * dt
+
+        # Сохранение предыдущих координат для отката при столкновении
+        prev_x, prev_y = self.x, self.y
 
         # Перемещение врага
         self.x += move_x
         self.y += move_y
+
+        # Обновление хитбокса
+        self.rect.topleft = (self.x, self.y)
+
+        # Проверка столкновений с другими драконами
+        for enemy in enemies:
+            if enemy != self and self.rect.colliderect(enemy.rect):
+                self.x, self.y = prev_x, prev_y
+                self.rect.topleft = (self.x, self.y)
+                break
 
         # Обновляем спрайт с учетом скорости анимации
         self.frame_count += 1
@@ -53,9 +70,9 @@ class Enemy:
             if self.current_sprite >= len(self.sprites[self.direction]):
                 self.current_sprite = 0
 
-        self.rect.topleft = (self.x, self.y)
-
-    def draw(self, screen, camera_x, camera_y):
-        sprite = self.sprites[self.direction][self.current_sprite]  # Выбираем спрайт в зависимости от направления
-        screen.blit(sprite, (self.x - camera_x, self.y - camera_y))
+    def draw(self, screen, camera_x, camera_y, debug=False):
+        screen.blit(self.sprites[self.direction][self.current_sprite], (self.x - camera_x, self.y - camera_y))
+        if debug:
+            # Отрисовка хитбокса
+            pygame.draw.rect(screen, (255, 0, 0), self.rect.move(-camera_x, -camera_y), 1)
         print(f"Enemy drawn at position ({self.x - camera_x}, {self.y - camera_y}), direction: {self.direction}, current sprite: {self.current_sprite}")  # Отладочное сообщение
