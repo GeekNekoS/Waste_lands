@@ -2,7 +2,7 @@ import pygame
 import sys
 import os
 import json
-from utils import play_background_music
+from mvc.controller.utils import play_background_music
 from settings import WIDTH, HEIGHT
 
 

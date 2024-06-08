@@ -84,7 +84,7 @@ class World:
     def generate_terrain(self):
         noise_map = self.generate_perlin_noise(self.width, self.height, self.scale)
         tree_threshold = 0.1  # Пороговое значение для размещения деревьев
-        min_distance_between_trees = 100  # Минимальное расстояние между деревьями
+        min_distance_between_trees = 80
 
         # Список для хранения координат существующих деревьев
         existing_tree_positions = []

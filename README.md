@@ -47,6 +47,7 @@
  - [Настройка готового проекта](#setting_up_a_project)
  - [Полезные команды](#useful_commands)
  - [Полезные ссылки](#useful_urls)
+ - [Структура проекта](#project_structure)
  - [Требования к проекту](#project_requirements)
  - [Музычка для разработки](#nekos_music)
 <br /> <br />
@@ -72,6 +73,37 @@
 <a name="useful_urls"></a> 
 ## Полезные ссылки
 [Звуки игры, звуковые эффекты](https://pixabay.com/ru/sound-effects/search/%d0%b7%d0%b2%d1%83%d0%ba%d0%b8%20%d0%b8%d0%b3%d1%80%d1%8b/?pagi=9)
+<br /> <br />
+
+
+<a name="project_structure"></a>
+# Структура проекта
+    Waste_lands
+    |__mvc
+    | |__model
+    | | |__enemy.py
+    | | |__inventory.py
+    | | |__items.py
+    | | |__player.py
+    | | |__world.py
+    | |
+    | |__view
+    | | |__menu.py
+    | |
+    | |__controller
+    |   |__perling_noise.py
+    |   |__utils.py
+    |
+    |__sounds
+    |__sprites
+    |__tests
+    |
+    |__config.py
+    |__main.py
+    |__settings.py
+    |
+    |__README.md
+    |__requirements.txt
 <br /> <br />
 
 
