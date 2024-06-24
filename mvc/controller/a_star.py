@@ -2,9 +2,7 @@ import heapq
 
 
 class AStar:
-    def __init__(self, grid_width, grid_height, obstacles=None):
-        self.grid_width = grid_width
-        self.grid_height = grid_height
+    def __init__(self, obstacles=None):
         self.obstacles = set(obstacles if obstacles else [])
 
     def heuristic(self, start, goal):
@@ -15,12 +13,12 @@ class AStar:
         x, y = node
         neighbors = [(x + dx, y + dy) for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
         valid_neighbors = [(nx, ny) for nx, ny in neighbors if
-                           0 <= nx < self.grid_width and 0 <= ny < self.grid_height and (nx, ny) not in self.obstacles]
+                           (nx, ny) not in self.obstacles]
         return valid_neighbors
 
     def find_path(self, start, goal):
-        if goal in self.obstacles or not (0 <= goal[0] < self.grid_width and 0 <= goal[1] < self.grid_height):
-            print("Goal is unreachable or invalid")
+        if goal in self.obstacles:
+            print("Goal is inside an obstacle")
             return []
 
         open_set = []

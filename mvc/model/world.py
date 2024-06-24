@@ -56,13 +56,10 @@ class World:
             'right': ['assets/sprites/dragon/right_1.png', 'assets/sprites/dragon/right_2.png',
                       'assets/sprites/dragon/right_3.png', 'assets/sprites/dragon/right_4.png']
         }
-        for _ in range(10):
-            x = random.randint(0, WIDTH)  # * 3
-            y = random.randint(0, HEIGHT)  # * 3
-            # Передаем grid_width и grid_height
-            grid_width = WIDTH
-            grid_height = HEIGHT
-            enemies.append(Enemy(x, y, sprite_paths, grid_width, grid_height, movement_speed=20))
+        for _ in range(5):
+            x = random.randint(0, WIDTH * 3)
+            y = random.randint(0, HEIGHT * 3)
+            enemies.append(Enemy(x, y, sprite_paths, movement_speed=20))
         return enemies
 
     def spawn_axe(self):
