@@ -28,7 +28,7 @@ def main():
     play_background_music()
 
     while True:
-        dt = clock.tick(FPS) / 1000  # Время, прошедшее с прошлого кадра в секундах
+        dt = clock.tick(FPS) / 1000.0  # Время, прошедшее с прошлого кадра в секундах
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

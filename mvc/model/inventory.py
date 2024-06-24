@@ -1,18 +1,24 @@
+from typing import List, Optional
+from mvc.model.items import Item
 import pygame
 
 
 class Inventory:
-    def __init__(self, max_slots):
+    def __init__(self, max_slots: int):
+        """Инициализирует инвентарь с заданным количеством слотов."""
         self.max_slots = max_slots
         self.items = [None] * max_slots
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """Возвращает текущее количество предметов в инвентаре."""
         return sum(1 for item in self.items if item is not None)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Optional[Item]:
+        """Возвращает предмет из указанного слота инвентаря."""
         return self.items[index]
 
     def add_item(self, item):
+        """Добавляет предмет в первый доступный слот инвентаря."""
         for i in range(self.max_slots):
             if not self.items[i]:
                 self.items[i] = item
@@ -22,14 +28,17 @@ class Inventory:
 
 class InventorySlot:
     def __init__(self, rect):
+        """Инициализирует слот инвентаря с заданным прямоугольником для отрисовки."""
         self.rect = rect
 
     def draw(self, screen):
+        """Отрисовывает рамку слота инвентаря на экране."""
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 1)  # Отрисовка рамки слота
 
 
 class InventoryPanel:
-    def __init__(self, x, y, width, height, inventory):
+    def __init__(self, x: int, y: int, width: int, height: int, inventory: Inventory):
+        """Инициализирует панель инвентаря с заданными параметрами."""
         self.x = x
         self.y = y
         self.width = width
@@ -40,7 +49,8 @@ class InventoryPanel:
         self.slot_padding = 1  # Расстояние между слотами
         self.active_slot_index = None  # Индекс активной ячейки
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Отрисовывает панель инвентаря на экране."""
         # Отрисовка фона инвентаря
         panel_rect = pygame.Rect(self.x, self.y, self.width, self.height)
         pygame.draw.rect(screen, (100, 100, 100), panel_rect)
@@ -87,10 +97,10 @@ class InventoryPanel:
                     if item:
                         screen.blit(item.icon, item_rect)
 
-    def update_inventory(self, new_inventory):
-        # Обновляем инвентарь
+    def update_inventory(self, new_inventory: Inventory) -> None:
+        """Обновляет инвентарь новым списком предметов."""
         self.inventory = new_inventory
 
-    def set_active_slot_index(self, index):
-        # Устанавливаем индекс активной ячейки
+    def set_active_slot_index(self, index: int) -> None:
+        """Устанавливает индекс активной ячейки в инвентаре."""
         self.active_slot_index = index

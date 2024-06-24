@@ -1,5 +1,5 @@
 WIDTH = 800
 HEIGHT = 600
-FPS = 60
+FPS = 120
 debug = True
 SEED = None
