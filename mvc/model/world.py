@@ -1,7 +1,7 @@
 import pygame
 import random
 import numpy as np
-from settings import debug, WIDTH, HEIGHT
+from settings import debug, WIDTH, HEIGHT, SEED
 from mvc.model.inventory import Inventory, InventoryPanel
 from mvc.model.items import Axe
 from mvc.controller.utils import detect_item_pickup, draw_debug_line_to_tree, distance
@@ -21,7 +21,7 @@ class World:
         self.width = WIDTH // 32  # Размеры карты в "клетках" (32x32 пикселей)
         self.height = HEIGHT // 32
         self.scale = 10
-        self.permutation = generate_permutation_table(seed=42)
+        self.permutation = generate_permutation_table(seed=SEED)
 
         self.generate_terrain()
         self.enemies = self.generate_enemies()  # Генерация врагов
@@ -84,7 +84,7 @@ class World:
     def generate_terrain(self):
         noise_map = self.generate_perlin_noise(self.width, self.height, self.scale)
         tree_threshold = 0.1  # Пороговое значение для размещения деревьев
-        min_distance_between_trees = 100  # Минимальное расстояние между деревьями
+        min_distance_between_trees = 80
 
         # Список для хранения координат существующих деревьев
         existing_tree_positions = []

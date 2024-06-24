@@ -21,7 +21,6 @@ class PlayerSounds:
         self.footstep_speed = footstep_speed
         self.footstep_timer = 0  # Таймер для отслеживания времени между звуками
         self.next_footstep_time = 0  # Время до следующего звука
-
         self.set_footstep_volume(0.3)  # Начальная громкость звуков шагов
 
     def update(self, dt):
@@ -151,12 +150,11 @@ class Player(pygame.sprite.Sprite):
             pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 1)  # Отрисовка хитбокса красной линией
 
     def update_hitbox(self):
-        # Обновляем хитбокс игрока после его перемещения
         hitbox_width = self.rect.width // 2
         hitbox_height = self.rect.height // 2
         self.hitbox = pygame.Rect(
             self.rect.x + (self.rect.width - hitbox_width) // 2,
-            self.rect.y + self.rect.height - hitbox_height,  # Позиция ниже спрайта
+            self.rect.y + self.rect.height - hitbox_height,
             hitbox_width,
             hitbox_height
         )
