@@ -56,9 +56,9 @@ class World:
             'right': ['assets/sprites/dragon/right_1.png', 'assets/sprites/dragon/right_2.png',
                       'assets/sprites/dragon/right_3.png', 'assets/sprites/dragon/right_4.png']
         }
-        for _ in range(3):
-            x = random.randint(0, WIDTH * 3)
-            y = random.randint(0, HEIGHT * 3)
+        for _ in range(10):
+            x = random.randint(0, WIDTH)  # * 3
+            y = random.randint(0, HEIGHT)  # * 3
             # Передаем grid_width и grid_height
             grid_width = WIDTH
             grid_height = HEIGHT

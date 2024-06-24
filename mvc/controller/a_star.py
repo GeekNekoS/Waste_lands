@@ -19,6 +19,10 @@ class AStar:
         return valid_neighbors
 
     def find_path(self, start, goal):
+        if goal in self.obstacles or not (0 <= goal[0] < self.grid_width and 0 <= goal[1] < self.grid_height):
+            print("Goal is unreachable or invalid")
+            return []
+
         open_set = []
         heapq.heappush(open_set, (0, start))
         came_from = {}
@@ -45,6 +49,5 @@ class AStar:
                     f_score[neighbor] = tentative_g_score + self.heuristic(neighbor, goal)
                     heapq.heappush(open_set, (f_score[neighbor], neighbor))
 
-        # Если не удалось найти путь
         print("Path not found")
         return []
