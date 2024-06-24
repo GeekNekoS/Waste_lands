@@ -1,4 +1,5 @@
 from config import player_sprites
+from typing import List, Tuple
 from settings import debug
 import pygame
 import random
@@ -13,7 +14,7 @@ footstep_sounds = [
 
 
 class PlayerSounds:
-    def __init__(self, footstep_speed=0.3):
+    def __init__(self, footstep_speed: float = 0.3):
         """Инициализирует звуки игрока, включая звуки шагов."""
         # Загрузка звуковых файлов
         self.footstep_sounds = footstep_sounds
@@ -24,11 +25,11 @@ class PlayerSounds:
         self.next_footstep_time = 0  # Время до следующего звука
         self.set_footstep_volume(0.3)  # Начальная громкость звуков шагов
 
-    def update(self, dt):
+    def update(self, dt: float) -> None:
         """Обновляет состояние звуков игрока."""
         self.footstep_timer += dt
 
-    def play_footstep(self):
+    def play_footstep(self) -> None:
         """Воспроизводит звук шага игрока."""
         # Проверяем, прошло ли достаточно времени для воспроизведения следующего звука
         if self.footstep_timer >= self.next_footstep_time:
@@ -42,14 +43,14 @@ class PlayerSounds:
             # Устанавливаем время до следующего звука
             self.next_footstep_time = self.footstep_speed
 
-    def set_footstep_volume(self, volume):
+    def set_footstep_volume(self, volume: float) -> None:
         """Устанавливает громкость звуков шагов."""
         for sound in self.footstep_sounds:
             sound.set_volume(volume)
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, start_pos, player_sounds):
+    def __init__(self, start_pos: Tuple[int, int], player_sounds: PlayerSounds):
         """Инициализирует игрока с заданной позицией и звуками."""
         super().__init__()
         # Загрузка спрайтов для всех направлений
@@ -81,7 +82,7 @@ class Player(pygame.sprite.Sprite):
         self.player_sounds = player_sounds  # Сохраняем экземпляр класса PlayerSounds
         self.is_moving = False  # Инициализируем флаг движения
 
-    def update(self, keys, dt, trees):
+    def update(self, keys: List[int], dt: float, trees: List[Tuple[int, pygame.Rect]]) -> None:
         """Обновляет состояние игрока на основе ввода клавиш, времени и препятствий."""
         self.player_sounds.update(dt)  # Обновляем таймер звуков игрока
         self.move(keys, dt, trees)
@@ -89,7 +90,7 @@ class Player(pygame.sprite.Sprite):
             self.animate(dt)
             self.player_sounds.play_footstep()  # Воспроизводим звуки ходьбы
 
-    def animate(self, dt):
+    def animate(self, dt: float) -> None:
         """Обновляет анимацию игрока."""
         self.animation_counter += dt
         if self.animation_counter >= self.animation_speed:
@@ -97,7 +98,7 @@ class Player(pygame.sprite.Sprite):
             self.current_frame = (self.current_frame + 1) % len(self.current_sprites)
             self.image = self.current_sprites[self.current_frame]
 
-    def move(self, keys, dt, trees):
+    def move(self, keys: List[int], dt: float, trees: List[Tuple[int, pygame.Rect]]) -> None:
         """Обрабатывает движение игрока в зависимости от нажатых клавиш."""
         dx, dy = 0, 0
         moving = False
@@ -144,7 +145,7 @@ class Player(pygame.sprite.Sprite):
 
         self.update_hitbox()
 
-    def draw(self, screen, camera_x, camera_y):
+    def draw(self, screen: pygame.Surface, camera_x: int, camera_y: int) -> None:
         """Отображает игрока на экране."""
         # Смещаем координаты отображения на основе камеры
         draw_rect = self.rect.move(-camera_x, -camera_y)
@@ -155,7 +156,7 @@ class Player(pygame.sprite.Sprite):
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 1)  # Отрисовка хитбокса красной линией
 
-    def update_hitbox(self):
+    def update_hitbox(self) -> None:
         """Обновляет положение хитбокса игрока."""
         hitbox_width = self.rect.width // 2
         hitbox_height = self.rect.height // 2

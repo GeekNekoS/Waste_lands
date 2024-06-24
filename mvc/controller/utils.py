@@ -1,15 +1,7 @@
 import pygame
-import random
-from settings import WIDTH, HEIGHT
-import math
 
 
-def distance(p1, p2):
-    """Вычисляет Евклидово расстояние между двумя точками."""
-    return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
-
-
-def draw_debug_line(screen, player_rect, item_rect, camera_x, camera_y):
+def draw_debug_line(screen: pygame.Surface, player_rect: pygame.Rect, item_rect: pygame.Rect, camera_x: int, camera_y: int):
     """Рисует отладочную линию между игроком и предметом на экране."""
     # Рассчитываем координаты центров прямоугольников с учетом смещения камеры
     player_center = (player_rect.centerx - camera_x, player_rect.centery - camera_y)
@@ -19,7 +11,7 @@ def draw_debug_line(screen, player_rect, item_rect, camera_x, camera_y):
     pygame.draw.line(screen, (255, 0, 0), player_center, item_center, 1)
 
 
-def draw_debug_line_to_tree(screen, player_rect, trees, camera_x, camera_y):
+def draw_debug_line_to_tree(screen: pygame.Surface, player_rect: pygame.Rect, trees: list, camera_x: int, camera_y: int):
     """Рисует отладочную линию от игрока до ближайшего дерева на экране."""
     # Получаем центр хитбокса игрока с учетом смещения камеры
     player_center = (player_rect.centerx - camera_x, player_rect.centery - camera_y)
@@ -42,18 +34,7 @@ def draw_debug_line_to_tree(screen, player_rect, trees, camera_x, camera_y):
         print("No tree found!")
 
 
-# Линия до всех деревьев на карте
-# def draw_debug_line_to_tree(screen, player_rect, trees, camera_x, camera_y):
-#     # Получаем центр хитбокса игрока с учетом смещения камеры
-#     player_center = (player_rect.centerx - camera_x, player_rect.centery - camera_y)
-#
-#     # Рисуем линию от игрока до каждого дерева
-#     for image_rect, hitbox_rect in trees:
-#         tree_center = (hitbox_rect.centerx - camera_x, hitbox_rect.centery - camera_y)
-#         pygame.draw.line(screen, (0, 255, 0), player_center, tree_center, 1)
-
-
-def detect_item_pickup(player_rect, item_rect):
+def detect_item_pickup(player_rect: pygame.Rect, item_rect: pygame.Rect) -> bool:
     """Проверяет, пересекаются ли прямоугольники игрока и предмета."""
     # Проверяем, пересекается ли игрок с предметом
     if player_rect.colliderect(item_rect):

@@ -3,7 +3,7 @@ from config import items_sprites
 
 
 class Item:
-    def __init__(self, name, icon_path, width=40, height=40):
+    def __init__(self, name: str, icon_path: str, width: int = 40, height: int = 40):
         """Инициализирует предмет с заданным именем и иконкой."""
         self.name = name
         self.icon = pygame.image.load(icon_path).convert_alpha()

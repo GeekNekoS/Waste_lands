@@ -1,17 +1,18 @@
+from typing import List, Tuple, Set, Dict, Union
 import heapq
 
 
 class AStar:
     """Класс AStar реализует алгоритм A* для поиска кратчайшего пути в игровом мире."""
-    def __init__(self, obstacles=None):
+    def __init__(self, obstacles: Union[Set[Tuple[int, int]], None] = None):
         """Инициализация объекта AStar."""
         self.obstacles = set(obstacles if obstacles else [])
 
-    def heuristic(self, start, goal):
+    def heuristic(self, start: Tuple[int, int], goal: Tuple[int, int]) -> int:
         """Манхэттенское расстояние между двумя точками."""
         return abs(start[0] - goal[0]) + abs(start[1] - goal[1])
 
-    def get_neighbors(self, node):
+    def get_neighbors(self, node: Tuple[int, int]) -> List[Tuple[int, int]]:
         """Получение соседних узлов для заданного узла."""
         x, y = node
         neighbors = [(x + dx, y + dy) for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
@@ -19,7 +20,7 @@ class AStar:
                            (nx, ny) not in self.obstacles]
         return valid_neighbors
 
-    def find_path(self, start, goal):
+    def find_path(self, start: Tuple[int, int], goal: Tuple[int, int]) -> List[Tuple[int, int]]:
         """Поиск кратчайшего пути от стартовой до целевой точки в игровом мире."""
         if goal in self.obstacles:
             print("Goal is inside an obstacle")

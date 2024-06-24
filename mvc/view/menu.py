@@ -1,15 +1,30 @@
 # Доисторическая версия menu, надо будет дописать и внедрить в игру
 
+from mvc.controller.utils import play_background_music
+from mvc.model.player import Player
+from mvc.model.world import World
+
 import pygame
 import sys
 import os
 import json
-from mvc.controller.utils import play_background_music
+from typing import Callable, Dict
 from settings import WIDTH, HEIGHT
 
 
 class Menu:
-    def __init__(self, screen, player, world, game_started=False, save_exists=False):
+    screen: pygame.Surface
+    player: Player
+    world: World
+    bg_color: tuple
+    font: pygame.font.Font
+    game_started: bool
+    save_exists: bool
+    selected_index: int
+    items: list[str]
+    menu_actions: Dict[str, Callable[[], None]]
+
+    def __init__(self, screen: pygame.Surface, player: Player, world: World, game_started: bool = False, save_exists: bool = False) -> None:
         """Инициализация объекта меню."""
         self.screen = screen
         self.player = player
@@ -27,7 +42,7 @@ class Menu:
         }
         self.update_items()
 
-    def update_items(self):
+    def update_items(self) -> None:
         """Обновление списка пунктов меню в зависимости от состояния игры."""
         if self.game_started:
             if self.save_exists:
@@ -37,7 +52,7 @@ class Menu:
         else:
             self.items = ['Start Game', 'Exit']
 
-    def run(self):
+    def run(self) -> None:
         """Запуск цикла отображения и обработки событий меню."""
         running = True
         while running:
@@ -61,7 +76,7 @@ class Menu:
             self.draw_menu()
             pygame.display.flip()
 
-    def draw_menu(self):
+    def draw_menu(self) -> None:
         """Отрисовка меню на экране."""
         for index, item in enumerate(self.items):
             color = (255, 0, 0) if index == self.selected_index else (255, 255, 255)
@@ -69,7 +84,7 @@ class Menu:
             label_rect = label.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + index * 50))
             self.screen.blit(label, label_rect)
 
-    def start_game(self):
+    def start_game(self) -> None:
         """Начало новой игры."""
         print("Starting new game...")
         self.game_started = True
@@ -77,13 +92,13 @@ class Menu:
         play_background_music()  # Запуск фоновой музыки
         self.run_game_loop()
 
-    def continue_game(self):
+    def continue_game(self) -> None:
         """Продолжение игры."""
         print("Continuing game...")
         self.load_game()
         self.run_game_loop()
 
-    def run_game_loop(self):
+    def run_game_loop(self) -> None:
         """Запуск игрового цикла после начала игры или продолжения."""
         game_running = True
         while game_running:
@@ -113,7 +128,7 @@ class Menu:
         self.update_items()
         self.run()
 
-    def save_game(self):
+    def save_game(self) -> None:
         """Сохранение текущего состояния игры в файл."""
         print("Saving game...")
         save_data = {
@@ -134,7 +149,7 @@ class Menu:
         except Exception as e:
             print(f"Error saving game: {e}")
 
-    def exit_game(self):
+    def exit_game(self) -> None:
         """Выход из игры, остановка музыки и завершение работы программы."""
         if not self.game_started and not os.path.exists('savegame.json'):
             # Если игра не начата и сохранения отсутствуют
@@ -145,7 +160,7 @@ class Menu:
         pygame.quit()
         sys.exit()
 
-    def load_game(self):
+    def load_game(self) -> None:
         """Загрузка сохраненного состояния игры из файла."""
         if not os.path.exists('savegame.json'):
             print("No save file found.")
