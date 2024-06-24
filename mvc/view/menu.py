@@ -1,3 +1,5 @@
+# Доисторическая версия menu, надо будет дописать и внедрить в игру
+
 import pygame
 import sys
 import os
@@ -8,6 +10,7 @@ from settings import WIDTH, HEIGHT
 
 class Menu:
     def __init__(self, screen, player, world, game_started=False, save_exists=False):
+        """Инициализация объекта меню."""
         self.screen = screen
         self.player = player
         self.world = world
@@ -25,6 +28,7 @@ class Menu:
         self.update_items()
 
     def update_items(self):
+        """Обновление списка пунктов меню в зависимости от состояния игры."""
         if self.game_started:
             if self.save_exists:
                 self.items = ['Start New Game', 'Continue', 'Save Game', 'Exit']
@@ -34,6 +38,7 @@ class Menu:
             self.items = ['Start Game', 'Exit']
 
     def run(self):
+        """Запуск цикла отображения и обработки событий меню."""
         running = True
         while running:
             for event in pygame.event.get():
@@ -57,6 +62,7 @@ class Menu:
             pygame.display.flip()
 
     def draw_menu(self):
+        """Отрисовка меню на экране."""
         for index, item in enumerate(self.items):
             color = (255, 0, 0) if index == self.selected_index else (255, 255, 255)
             label = self.font.render(item, True, color)
@@ -64,6 +70,7 @@ class Menu:
             self.screen.blit(label, label_rect)
 
     def start_game(self):
+        """Начало новой игры."""
         print("Starting new game...")
         self.game_started = True
         self.save_exists = False  # Новая игра, поэтому сохранение не существует
@@ -71,11 +78,13 @@ class Menu:
         self.run_game_loop()
 
     def continue_game(self):
+        """Продолжение игры."""
         print("Continuing game...")
         self.load_game()
         self.run_game_loop()
 
     def run_game_loop(self):
+        """Запуск игрового цикла после начала игры или продолжения."""
         game_running = True
         while game_running:
             dt = pygame.time.Clock().tick(60) / 1000
@@ -105,6 +114,7 @@ class Menu:
         self.run()
 
     def save_game(self):
+        """Сохранение текущего состояния игры в файл."""
         print("Saving game...")
         save_data = {
             'player_position': {
@@ -125,6 +135,7 @@ class Menu:
             print(f"Error saving game: {e}")
 
     def exit_game(self):
+        """Выход из игры, остановка музыки и завершение работы программы."""
         if not self.game_started and not os.path.exists('savegame.json'):
             # Если игра не начата и сохранения отсутствуют
             self.save_exists = False  # Устанавливаем значение в False
@@ -135,6 +146,7 @@ class Menu:
         sys.exit()
 
     def load_game(self):
+        """Загрузка сохраненного состояния игры из файла."""
         if not os.path.exists('savegame.json'):
             print("No save file found.")
             return

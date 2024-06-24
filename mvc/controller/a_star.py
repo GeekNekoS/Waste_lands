@@ -2,14 +2,17 @@ import heapq
 
 
 class AStar:
+    """Класс AStar реализует алгоритм A* для поиска кратчайшего пути в игровом мире."""
     def __init__(self, obstacles=None):
+        """Инициализация объекта AStar."""
         self.obstacles = set(obstacles if obstacles else [])
 
     def heuristic(self, start, goal):
-        # Манхэттенское расстояние
+        """Манхэттенское расстояние между двумя точками."""
         return abs(start[0] - goal[0]) + abs(start[1] - goal[1])
 
     def get_neighbors(self, node):
+        """Получение соседних узлов для заданного узла."""
         x, y = node
         neighbors = [(x + dx, y + dy) for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
         valid_neighbors = [(nx, ny) for nx, ny in neighbors if
@@ -17,6 +20,7 @@ class AStar:
         return valid_neighbors
 
     def find_path(self, start, goal):
+        """Поиск кратчайшего пути от стартовой до целевой точки в игровом мире."""
         if goal in self.obstacles:
             print("Goal is inside an obstacle")
             return []

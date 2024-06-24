@@ -3,14 +3,17 @@ import random
 
 
 def fade(t):
+    """Функция для вычисления fade функции для генерации Perlin шума."""
     return t * t * t * (t * (t * 6 - 15) + 10)
 
 
 def lerp(t, a, b):
+    """Функция для выполнения линейной интерполяции между двумя значениями a и b."""
     return a + t * (b - a)
 
 
 def grad(hash, x, y):
+    """Функция для вычисления градиента для генерации Perlin шума."""
     h = hash & 15
     u = x if h < 8 else y
     v = y if h < 4 else (x if h in (12, 14) else 0)
@@ -18,6 +21,7 @@ def grad(hash, x, y):
 
 
 def perlin(x, y, permutation):
+    """Функция для генерации двумерного Perlin шума."""
     p = permutation + permutation
     X = math.floor(x) & 255
     Y = math.floor(y) & 255
@@ -39,6 +43,7 @@ def perlin(x, y, permutation):
 
 
 def generate_permutation_table(seed=None):
+    """Функция для генерации таблицы перестановок для генерации Perlin шума."""
     permutation = list(range(256))
     if seed is not None:
         random.seed(seed)

@@ -11,6 +11,7 @@ from mvc.model.enemy import Enemy
 
 class World:
     def __init__(self):
+        """Инициализация мира игры."""
         self.tree_image = pygame.image.load('assets/sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
@@ -45,6 +46,7 @@ class World:
         self.item_picked_up_this_frame = False
 
     def generate_enemies(self):
+        """Генерация врагов (драконов)."""
         enemies = []
         sprite_paths = {
             'up': ['assets/sprites/dragon/up_1.png', 'assets/sprites/dragon/up_2.png',
@@ -56,13 +58,14 @@ class World:
             'right': ['assets/sprites/dragon/right_1.png', 'assets/sprites/dragon/right_2.png',
                       'assets/sprites/dragon/right_3.png', 'assets/sprites/dragon/right_4.png']
         }
-        for _ in range(5):
+        for _ in range(1):  # генерация одного дракона
             x = random.randint(0, WIDTH * 3)
             y = random.randint(0, HEIGHT * 3)
             enemies.append(Enemy(x, y, sprite_paths, movement_speed=20))
         return enemies
 
     def spawn_axe(self):
+        """Размещение топора на карте."""
         # Переменная для хранения коллизий с деревьями
         tree_collisions = [tree[0].inflate(20, 20) for tree in self.trees]
 
@@ -86,6 +89,7 @@ class World:
         self.axe_rect.y = y
 
     def generate_terrain(self):
+        """Генерация ландшафта с использованием шума Перлина и размещение деревьев."""
         noise_map = self.generate_perlin_noise(self.width, self.height, self.scale)
         tree_threshold = 0.1  # Пороговое значение для размещения деревьев
         min_distance_between_trees = 80
@@ -108,6 +112,7 @@ class World:
                         attempts += 1
 
     def is_far_enough_from_existing_trees(self, existing_tree_positions, x, y, min_distance):
+        """Проверка, достаточно ли далеко новое дерево от существующих деревьев."""
         for tree_x, tree_y in existing_tree_positions:
             distance = ((x - tree_x) ** 2 + (y - tree_y) ** 2) ** 0.5
             if distance < min_distance:
@@ -115,6 +120,7 @@ class World:
         return True
 
     def generate_perlin_noise(self, width, height, scale):
+        """Генерация шума Перлина для создания ландшафта."""
         shape = (width, height)
         world = np.zeros(shape)
         for i in range(shape[0]):
@@ -127,6 +133,7 @@ class World:
         return world
 
     def add_tree(self, x=None, y=None):
+        """Добавление дерева на карту."""
         max_attempts = 50
         image_size = (150, 150)
         hitbox_size = (30, 30)
@@ -154,9 +161,11 @@ class World:
                 print(f"Tree added at ({x}, {y})")
 
     def get_save_data(self):
+        """Получение данных для сохранения текущего состояния деревьев на карте. (понадобится после прикрутки меню)"""
         return [(tree[1].x, tree[1].y) for tree in self.trees]
 
     def load_from_save(self, tree_positions):
+        """Загрузка данных для восстановления состояния деревьев на карте. (понадобится после прикрутки меню)"""
         self.trees = []
         for pos in tree_positions:
             image_size = (150, 150)
@@ -168,6 +177,7 @@ class World:
             self.trees.append((image_rect, hitbox_rect))
 
     def draw(self, screen, player, camera_x, camera_y):
+        """Отрисовка всех объектов мира, включая игрока, деревья, врагов и т.д."""
         # Рассчитываем смещение камеры, чтобы персонаж оказался по центру экрана по горизонтали
         player_center_x = player.rect.centerx
         camera_center_x = WIDTH // 2  # Центр экрана по горизонтали
@@ -253,6 +263,7 @@ class World:
             enemy.draw(screen, camera_x, camera_y)
 
     def add_item_to_player_inventory(self, item):
+        """Добавление предмета в инвентарь игрока."""
         # Проверяем, есть ли свободное место в инвентаре
         if len(self.player_inventory) < self.player_inventory.max_slots:
             # Добавляем предмет в инвентарь
@@ -266,6 +277,7 @@ class World:
             return False
 
     def update(self, player_rect, dt):
+        """Обновление состояния мира."""
         # Проверяем, подобран ли предмет и нажата ли клавиша "E"
         if detect_item_pickup(player_rect, self.axe_rect) and pygame.key.get_pressed()[pygame.K_e]:
             # Проверяем, не подбирался ли предмет уже в текущем кадре

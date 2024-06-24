@@ -4,6 +4,7 @@ from mvc.controller.a_star import AStar
 
 class Enemy:
     def __init__(self, x, y, sprite_paths, movement_speed=1):
+        """Инициализирует объект врага."""
         self.x = x
         self.y = y
         self.sprites = self.load_sprites(sprite_paths)
@@ -21,6 +22,7 @@ class Enemy:
         self.path_update_interval = 2000  # Изменим интервал обновления пути до 2 секунд
 
     def find_path_to_player(self, player_pos, grid):
+        """Находит путь к позиции игрока на игровом поле с использованием алгоритма A*."""
         try:
             current_time = pygame.time.get_ticks()
             if current_time - self.last_path_update_time >= self.path_update_interval or self.target_pos != player_pos:
@@ -35,12 +37,14 @@ class Enemy:
             self.path = []
 
     def load_sprites(self, sprite_paths):
+        """Загружает спрайты врага из заданных путей."""
         sprites = {}
         for direction, paths in sprite_paths.items():
             sprites[direction] = [pygame.image.load(path).convert_alpha() for path in paths]
         return sprites
 
     def update(self, player_rect, dt, grid):
+        """Обновляет состояние врага на основе позиции игрока и игрового поля."""
         move_x, move_y = 0, 0
 
         if not self.path or self.direction_changed or self.target_pos != (player_rect.x, player_rect.y):
@@ -82,11 +86,13 @@ class Enemy:
                 self.current_sprite = (self.current_sprite + 1) % len(self.sprites[self.direction])
 
     def update_position(self, move_x, move_y):
+        """Обновляет позицию врага на основе заданных смещений."""
         self.x += move_x
         self.y += move_y
         self.rect.topleft = (self.x, self.y)
 
     def draw(self, screen, camera_x, camera_y, debug=False):
+        """Отрисовывает врага на экране."""
         screen.blit(self.sprites[self.direction][self.current_sprite], (self.x - camera_x, self.y - camera_y))
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), self.rect.move(-camera_x, -camera_y), 1)

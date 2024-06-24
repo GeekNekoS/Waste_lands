@@ -14,6 +14,7 @@ footstep_sounds = [
 
 class PlayerSounds:
     def __init__(self, footstep_speed=0.3):
+        """Инициализирует звуки игрока, включая звуки шагов."""
         # Загрузка звуковых файлов
         self.footstep_sounds = footstep_sounds
 
@@ -24,11 +25,11 @@ class PlayerSounds:
         self.set_footstep_volume(0.3)  # Начальная громкость звуков шагов
 
     def update(self, dt):
-        # Обновляем таймер
+        """Обновляет состояние звуков игрока."""
         self.footstep_timer += dt
 
     def play_footstep(self):
-        # print("Playing footstep")
+        """Воспроизводит звук шага игрока."""
         # Проверяем, прошло ли достаточно времени для воспроизведения следующего звука
         if self.footstep_timer >= self.next_footstep_time:
             # Воспроизводим случайный звук шага
@@ -49,6 +50,7 @@ class PlayerSounds:
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, start_pos, player_sounds):
+        """Инициализирует игрока с заданной позицией и звуками."""
         super().__init__()
         # Загрузка спрайтов для всех направлений
         self.sprites = {
@@ -80,6 +82,7 @@ class Player(pygame.sprite.Sprite):
         self.is_moving = False  # Инициализируем флаг движения
 
     def update(self, keys, dt, trees):
+        """Обновляет состояние игрока на основе ввода клавиш, времени и препятствий."""
         self.player_sounds.update(dt)  # Обновляем таймер звуков игрока
         self.move(keys, dt, trees)
         if self.is_moving:
@@ -87,6 +90,7 @@ class Player(pygame.sprite.Sprite):
             self.player_sounds.play_footstep()  # Воспроизводим звуки ходьбы
 
     def animate(self, dt):
+        """Обновляет анимацию игрока."""
         self.animation_counter += dt
         if self.animation_counter >= self.animation_speed:
             self.animation_counter = 0
@@ -94,6 +98,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self.current_sprites[self.current_frame]
 
     def move(self, keys, dt, trees):
+        """Обрабатывает движение игрока в зависимости от нажатых клавиш."""
         dx, dy = 0, 0
         moving = False
 
@@ -140,6 +145,7 @@ class Player(pygame.sprite.Sprite):
         self.update_hitbox()
 
     def draw(self, screen, camera_x, camera_y):
+        """Отображает игрока на экране."""
         # Смещаем координаты отображения на основе камеры
         draw_rect = self.rect.move(-camera_x, -camera_y)
         draw_hitbox = self.hitbox.move(-camera_x, -camera_y)
@@ -150,6 +156,7 @@ class Player(pygame.sprite.Sprite):
             pygame.draw.rect(screen, (255, 0, 0), draw_hitbox, 1)  # Отрисовка хитбокса красной линией
 
     def update_hitbox(self):
+        """Обновляет положение хитбокса игрока."""
         hitbox_width = self.rect.width // 2
         hitbox_height = self.rect.height // 2
         self.hitbox = pygame.Rect(
