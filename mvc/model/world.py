@@ -11,7 +11,7 @@ from mvc.model.enemy import Enemy
 
 class World:
     def __init__(self):
-        self.tree_image = pygame.image.load('sprites/tree.png').convert_alpha()
+        self.tree_image = pygame.image.load('assets/sprites/tree.png').convert_alpha()
         self.tree_image = pygame.transform.scale(self.tree_image, (150, 150))
         self.trees = []
         self.enemies = []
@@ -47,15 +47,22 @@ class World:
     def generate_enemies(self):
         enemies = []
         sprite_paths = {
-            'up': ['sprites/dragon/up_1.png', 'sprites/dragon/up_2.png', 'sprites/dragon/up_3.png', 'sprites/dragon/up_4.png'],
-            'down': ['sprites/dragon/down_1.png', 'sprites/dragon/down_2.png', 'sprites/dragon/down_3.png', 'sprites/dragon/down_4.png'],
-            'left': ['sprites/dragon/left_1.png', 'sprites/dragon/left_2.png', 'sprites/dragon/left_3.png', 'sprites/dragon/left_4.png'],
-            'right': ['sprites/dragon/right_1.png', 'sprites/dragon/right_2.png', 'sprites/dragon/right_3.png', 'sprites/dragon/right_4.png']
+            'up': ['assets/sprites/dragon/up_1.png', 'assets/sprites/dragon/up_2.png',
+                   'assets/sprites/dragon/up_3.png', 'assets/sprites/dragon/up_4.png'],
+            'down': ['assets/sprites/dragon/down_1.png', 'assets/sprites/dragon/down_2.png',
+                     'assets/sprites/dragon/down_3.png', 'assets/sprites/dragon/down_4.png'],
+            'left': ['assets/sprites/dragon/left_1.png', 'assets/sprites/dragon/left_2.png',
+                     'assets/sprites/dragon/left_3.png', 'assets/sprites/dragon/left_4.png'],
+            'right': ['assets/sprites/dragon/right_1.png', 'assets/sprites/dragon/right_2.png',
+                      'assets/sprites/dragon/right_3.png', 'assets/sprites/dragon/right_4.png']
         }
-        for _ in range(5):
+        for _ in range(3):
             x = random.randint(0, WIDTH * 3)
             y = random.randint(0, HEIGHT * 3)
-            enemies.append(Enemy(x, y, sprite_paths, movement_speed=20))
+            # Передаем grid_width и grid_height
+            grid_width = WIDTH
+            grid_height = HEIGHT
+            enemies.append(Enemy(x, y, sprite_paths, grid_width, grid_height, movement_speed=20))
         return enemies
 
     def spawn_axe(self):
@@ -246,7 +253,6 @@ class World:
 
         # Отрисовываем врагов
         for enemy in self.enemies:
-            print(f"Рисуем врага на позиции ({enemy.x}, {enemy.y})")  # Отладочное сообщение
             enemy.draw(screen, camera_x, camera_y)
 
     def add_item_to_player_inventory(self, item):
@@ -281,5 +287,4 @@ class World:
 
         # Обновление врагов
         for enemy in self.enemies:
-            print(f"Обновляем врага на позиции ({enemy.x}, {enemy.y})")  # Отладочное сообщение
             enemy.update(player_rect, dt, self.enemies)
