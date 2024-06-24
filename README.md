@@ -79,6 +79,11 @@
 <a name="project_structure"></a>
 # Структура проекта
     Waste_lands
+    |
+    |__assets
+    | |__sounds
+    | |__sprites
+    |
     |__mvc
     | |__model
     | | |__enemy.py
@@ -91,17 +96,17 @@
     | | |__menu.py
     | |
     | |__controller
+    |   |__a_star.py
     |   |__perling_noise.py
     |   |__utils.py
     |
-    |__sounds
-    |__sprites
     |__tests
+    | |__sprites_load.py
     |
     |__config.py
     |__main.py
     |__settings.py
-    |
+    |__data_for_readme
     |__README.md
     |__requirements.txt
 <br /> <br />
