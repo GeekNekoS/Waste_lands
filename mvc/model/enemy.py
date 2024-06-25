@@ -4,7 +4,7 @@ import threading
 
 
 class Enemy:
-    def __init__(self, x: int, y: int, sprite_paths: dict, movement_speed: float = 2):  # Увеличено с 1 до 2
+    def __init__(self, x: int, y: int, sprite_paths: dict, movement_speed: float = 2):
         self.x = x
         self.y = y
         self.sprites = self.load_sprites(sprite_paths)
@@ -24,7 +24,7 @@ class Enemy:
 
     def find_path_to_player(self, player_pos, grid):
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_path_update_time >= self.path_update_interval or self.target_pos != player_pos:
+        if current_time - self.last_path_update_time >= self.path_update_interval:
             if not self.updating_path:
                 self.updating_path = True
                 threading.Thread(target=self._update_path, args=(player_pos, grid)).start()
@@ -51,9 +51,9 @@ class Enemy:
         return sprites
 
     def update(self, player_rect: pygame.Rect, dt: float, grid: list):
-        if not self.path or self.direction_changed or self.target_pos != (player_rect.x, player_rect.y):
+        # Проверяем и обновляем путь, если прошло достаточно времени или пути нет
+        if not self.path or pygame.time.get_ticks() - self.last_path_update_time >= self.path_update_interval:
             self.find_path_to_player((player_rect.x, player_rect.y), grid)
-            self.direction_changed = False
 
         if self.path:
             try:
@@ -74,6 +74,7 @@ class Enemy:
 
                 self.update_position(move_x, move_y)
 
+                # Если достигли следующего узла, удаляем его из пути
                 if (self.x, self.y) == next_node:
                     self.path.pop(0)
 
