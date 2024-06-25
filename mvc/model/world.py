@@ -1,5 +1,5 @@
 from mvc.controller.utils import detect_item_pickup, draw_debug_line_to_tree
-from mvc.controller.perlin_noise import perlin, generate_permutation_table
+from mvc.model.perlin_noise import perlin, generate_permutation_table
 from mvc.model.inventory import Inventory, InventoryPanel
 from mvc.model.items import Axe, Item
 from mvc.model.player import Player
@@ -61,7 +61,7 @@ class World:
             'right': ['assets/sprites/dragon/right_1.png', 'assets/sprites/dragon/right_2.png',
                       'assets/sprites/dragon/right_3.png', 'assets/sprites/dragon/right_4.png']
         }
-        for _ in range(1):  # генерация одного дракона
+        for _ in range(3):  # генерация драконов
             x = random.randint(0, WIDTH * 3)
             y = random.randint(0, HEIGHT * 3)
             enemies.append(Enemy(x, y, sprite_paths, movement_speed=20))
