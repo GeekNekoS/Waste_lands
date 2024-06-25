@@ -1,5 +1,5 @@
 from mvc.controller.utils import detect_item_pickup, draw_debug_line_to_tree
-from mvc.controller.perlin_noise import perlin, generate_permutation_table
+from mvc.model.perlin_noise import perlin, generate_permutation_table
 from mvc.model.inventory import Inventory, InventoryPanel
 from mvc.model.items import Axe, Item
 from mvc.model.player import Player

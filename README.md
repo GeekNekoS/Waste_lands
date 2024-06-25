@@ -89,6 +89,7 @@
     | | |__enemy.py
     | | |__inventory.py
     | | |__items.py
+    |   |__perling_noise.py
     | | |__player.py
     | | |__world.py
     | |
@@ -97,7 +98,6 @@
     | |
     | |__controller
     |   |__a_star.py
-    |   |__perling_noise.py
     |   |__utils.py
     |
     |__tests
