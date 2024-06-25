@@ -12,14 +12,14 @@ class Enemy:
         self.current_sprite = 0
         self.movement_speed = movement_speed
         self.rect = self.sprites[self.direction][0].get_rect(topleft=(self.x, self.y))
-        self.animation_speed = 10
-        self.frame_count = 0
+        self.animation_speed = 100  # milliseconds per frame
+        self.last_animation_update_time = pygame.time.get_ticks()
 
         self.path = []
         self.direction_changed = False
         self.target_pos = None
         self.last_path_update_time = 0
-        self.path_update_interval = 2000  # 2 seconds
+        self.path_update_interval = 2000  # 2 секунды
         self.updating_path = False
 
     def find_path_to_player(self, player_pos, grid):
@@ -79,10 +79,10 @@ class Enemy:
             except Exception as e:
                 self.path = []
 
-        # Удаляем логику, которая останавливает анимацию при отсутствии пути
-        self.frame_count += 1
-        if self.frame_count >= self.animation_speed:
-            self.frame_count = 0
+        # Обновляем анимацию по времени, а не по кадрам
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_animation_update_time >= self.animation_speed:
+            self.last_animation_update_time = current_time
             self.current_sprite = (self.current_sprite + 1) % len(self.sprites[self.direction])
 
     def update_position(self, move_x: float, move_y: float):
