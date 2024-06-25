@@ -4,7 +4,7 @@ import threading
 
 
 class Enemy:
-    def __init__(self, x: int, y: int, sprite_paths: dict, movement_speed: float = 1):
+    def __init__(self, x: int, y: int, sprite_paths: dict, movement_speed: float = 2):  # Увеличено с 1 до 2
         self.x = x
         self.y = y
         self.sprites = self.load_sprites(sprite_paths)
@@ -12,14 +12,14 @@ class Enemy:
         self.current_sprite = 0
         self.movement_speed = movement_speed
         self.rect = self.sprites[self.direction][0].get_rect(topleft=(self.x, self.y))
-        self.animation_speed = 100  # milliseconds per frame
+        self.animation_speed = 150  # 150 миллисекунд
         self.last_animation_update_time = pygame.time.get_ticks()
 
         self.path = []
         self.direction_changed = False
         self.target_pos = None
         self.last_path_update_time = 0
-        self.path_update_interval = 2000  # 2 секунды
+        self.path_update_interval = 2000  # 2000 миллисекунд
         self.updating_path = False
 
     def find_path_to_player(self, player_pos, grid):
@@ -60,16 +60,17 @@ class Enemy:
                 next_node = self.path[0]
                 dx, dy = next_node[0] - self.x, next_node[1] - self.y
 
-                step = self.movement_speed * dt
+                # Увеличиваем шаг перемещения
+                step = self.movement_speed * dt * 2  # Увеличено в 2 раза
                 move_x = min(max(dx, -step), step)
                 move_y = min(max(dy, -step), step)
 
-                if abs(dx) < step:
-                    move_x = dx
-                if abs(dy) < step:
-                    move_y = dy
-
-                self.direction = 'right' if dx > 0 else 'left' if dx < 0 else 'down' if dy > 0 else 'up'
+                # Проверяем значительные изменения в направлении
+                if abs(dx) > 0.1 or abs(dy) > 0.1:
+                    if abs(dx) > abs(dy):
+                        self.direction = 'right' if dx > 0 else 'left'
+                    else:
+                        self.direction = 'down' if dy > 0 else 'up'
 
                 self.update_position(move_x, move_y)
 
