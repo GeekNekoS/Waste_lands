@@ -4,7 +4,7 @@ import threading
 
 
 class Enemy:
-    def __init__(self, x: int, y: int, sprite_paths: dict, movement_speed: float = 1):
+    def __init__(self, x: int, y: int, sprite_paths: dict, movement_speed: float = 2):
         self.x = x
         self.y = y
         self.sprites = self.load_sprites(sprite_paths)
@@ -12,19 +12,19 @@ class Enemy:
         self.current_sprite = 0
         self.movement_speed = movement_speed
         self.rect = self.sprites[self.direction][0].get_rect(topleft=(self.x, self.y))
-        self.animation_speed = 10
-        self.frame_count = 0
+        self.animation_speed = 150  # 150 миллисекунд
+        self.last_animation_update_time = pygame.time.get_ticks()
 
         self.path = []
         self.direction_changed = False
         self.target_pos = None
         self.last_path_update_time = 0
-        self.path_update_interval = 2000  # 2 seconds
+        self.path_update_interval = 2000  # 2000 миллисекунд
         self.updating_path = False
 
     def find_path_to_player(self, player_pos, grid):
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_path_update_time >= self.path_update_interval or self.target_pos != player_pos:
+        if current_time - self.last_path_update_time >= self.path_update_interval:
             if not self.updating_path:
                 self.updating_path = True
                 threading.Thread(target=self._update_path, args=(player_pos, grid)).start()
@@ -51,38 +51,40 @@ class Enemy:
         return sprites
 
     def update(self, player_rect: pygame.Rect, dt: float, grid: list):
-        if not self.path or self.direction_changed or self.target_pos != (player_rect.x, player_rect.y):
+        # Проверяем и обновляем путь, если прошло достаточно времени или пути нет
+        if not self.path or pygame.time.get_ticks() - self.last_path_update_time >= self.path_update_interval:
             self.find_path_to_player((player_rect.x, player_rect.y), grid)
-            self.direction_changed = False
 
         if self.path:
             try:
                 next_node = self.path[0]
                 dx, dy = next_node[0] - self.x, next_node[1] - self.y
 
-                step = self.movement_speed * dt
+                # Увеличиваем шаг перемещения
+                step = self.movement_speed * dt * 2  # Увеличено в 2 раза
                 move_x = min(max(dx, -step), step)
                 move_y = min(max(dy, -step), step)
 
-                if abs(dx) < step:
-                    move_x = dx
-                if abs(dy) < step:
-                    move_y = dy
-
-                self.direction = 'right' if dx > 0 else 'left' if dx < 0 else 'down' if dy > 0 else 'up'
+                # Проверяем значительные изменения в направлении
+                if abs(dx) > 0.1 or abs(dy) > 0.1:
+                    if abs(dx) > abs(dy):
+                        self.direction = 'right' if dx > 0 else 'left'
+                    else:
+                        self.direction = 'down' if dy > 0 else 'up'
 
                 self.update_position(move_x, move_y)
 
+                # Если достигли следующего узла, удаляем его из пути
                 if (self.x, self.y) == next_node:
                     self.path.pop(0)
 
             except Exception as e:
                 self.path = []
 
-        # Удаляем логику, которая останавливает анимацию при отсутствии пути
-        self.frame_count += 1
-        if self.frame_count >= self.animation_speed:
-            self.frame_count = 0
+        # Обновляем анимацию по времени, а не по кадрам
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_animation_update_time >= self.animation_speed:
+            self.last_animation_update_time = current_time
             self.current_sprite = (self.current_sprite + 1) % len(self.sprites[self.direction])
 
     def update_position(self, move_x: float, move_y: float):
