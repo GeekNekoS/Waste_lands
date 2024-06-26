@@ -9,7 +9,7 @@ from mvc.controller.utils import play_background_music
 
 def main():
     pygame.init()
-    pygame.display.set_caption("Forgotten Spaces")
+    pygame.display.set_caption("Waste lands")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     world = World()
