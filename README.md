@@ -79,36 +79,31 @@
 <a name="project_structure"></a>
 # Структура проекта
     Waste_lands
-    |
-    |__assets
-    | |__sounds
-    | |__sprites
-    |
-    |__mvc
-    | |__model
-    | | |__enemy.py
-    | | |__inventory.py
-    | | |__items.py
-    |   |__perling_noise.py
-    | | |__player.py
-    | | |__world.py
-    | |
-    | |__view
-    | | |__menu.py
-    | |
-    | |__controller
-    |   |__a_star.py
-    |   |__utils.py
-    |
-    |__tests
-    | |__sprites_load.py
-    |
-    |__config.py
-    |__main.py
-    |__settings.py
-    |__data_for_readme
-    |__README.md
-    |__requirements.txt
+    ├── assets/
+    │   ├── sounds
+    │   └── sprites
+    ├── data_for_readme/
+    ├── mvc
+    │   ├── controller/
+    │   │   ├── a_star.py
+    │   │   └── utils.py
+    │   ├── model/
+    │   │   ├── enemy.py
+    │   │   ├── inventory.py
+    │   │   ├── items.py
+    │   │   ├── perling_noise.py
+    │   │   ├── player.py
+    │   │   └── world.py
+    │   └── view/
+    │       └── menu.py
+    ├── tests
+    │   └── sprites_load.py
+    │
+    ├── config.py
+    ├── main.py
+    ├── README.md
+    ├── requirements.txt
+    └── settings.py
 <br /> <br />
 
 
